@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>phpBB Snippets - 1 Post Limit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="./../../assets/css/bootstrap.css" rel="stylesheet">
+    <link href="./../../assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="./../../assets/css/docs.css" rel="stylesheet">
+    <link href="./../../assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="./../../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./../../assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./../../assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="./../../assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="./../../assets/ico/favicon.png">
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" style="color:#fff;">phpBB Snippets</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="#top">Back to top</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>1 Post Limit</h1>
+  </div>
+</header>
+
+  <div class="container">
+
+        <section id="top">
+          <div class="page-header">
+            
+          </div>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=twisterz" style="font-weight:bold;">twisterz</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1735325">this topic</a>, this little snippet stops users from making any more than 1 post - anyone with administrator or moderator privileges is exempt from this limit.</p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+posting.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">
+// Permission to do the action asked?
+$is_authed = false; 
+</pre>
+<pre>#
+#-----[ BEFORE, ADD ]------------------------------------------
+#
+</pre>				
+<pre class="prettyprint linenums">    // Users can only post once
+    if ($user->data['user_posts'] >= 1 && !$auth->acl_get('a_', 'm_')) 
+    {
+        trigger_error("You are only allowed to post once on this forum");
+    }</pre>
+<p>Or this if you would like a link added to go back to the index page</p>			
+<pre class="prettyprint linenums">    if ($user->data['user_posts'] >= 1 && !$auth->acl_get('a_', 'm_')) 
+    {
+            $message = 'You are only allowed to post once on this forum<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
+            trigger_error($message);
+    }</pre> 			
+          <p>You could also set this up in just 1 or certain forums using a similar set up to the way I did static topics.</p>
+<pre class="prettyprint linenums">    $one_post_limit = array("1", "2", "3"); // replace 1, 2, 3 with your forum ID's. Add/remove as necessary
+
+    if (in_array($forum_id, $one_post_limit ))
+    { 
+    // Code from above
+    }</pre>	
+        </section>
+    </div>
+
+	<footer class="footer">
+      <div class="container">
+        <p>`This page was designed and built using the awesome Bootstrap CSS framework from <a target="_blank" href="http://twitter.com/mdo">@mdo</a> and <a target="_blank" href="http://twitter.com/fat">@fat</a>.</p>
+        <p>Code provided here is given as is with no guarantee of support - this code has <strong>not</strong> been tested with the latest phpBB versions.</p>
+        <ul class="footer-links">
+          <li><a href="http://www.phpbb.com/">phpBB.com</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://github.com/phpBB">phpBB Github</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://www.kennycameron.co.uk">Personal Site</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="./../../assets/js/jquery.js"></script>
+    <script src="./../../assets/js/bootstrap-transition.js"></script>
+    <script src="./../../assets/js/bootstrap-modal.js"></script>
+    <script src="./../../assets/js/bootstrap-tab.js"></script>
+    <script src="./../../assets/js/bootstrap-tooltip.js"></script>
+    <script src="./../../assets/js/bootstrap-button.js"></script>
+    <script src="./../../assets/js/bootstrap-collapse.js"></script>
+    <script src="./../../assets/js/bootstrap-affix.js"></script>
+
+    <script src="./../../assets/js/holder/holder.js"></script>
+    <script src="./../../assets/js/google-code-prettify/prettify.js"></script>
+
+    <script src="./../../assets/js/application.js"></script>
+
+  </body>
+</html>
