@@ -257,7 +257,10 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
   display: none;
 }
 
-
+pre.prettyprint {
+	max-height: 300px;
+    overflow-y: scroll;
+}
 
 /* Marketing section of Overview
 -------------------------------------------------- */
@@ -294,7 +297,9 @@ only screen and (     -o-min-device-pixel-ratio: 2/1) {
   max-height: 145px;
 }
 
-
+.thumbnail {
+	width:400px;
+}
 
 /* Footer
 -------------------------------------------------- */

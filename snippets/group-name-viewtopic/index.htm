@@ -51,7 +51,7 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Group name in viewtopic</h1>
   </div>
 </header>
 
@@ -61,19 +61,93 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=cdog" style="font-weight:bold;">cdog</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1786185">this topic</a>, </p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewtopic.php  
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
+<pre class="prettyprint linenums">            if ($poster_id == ANONYMOUS)
+            { 
+</pre>
+	  
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>
+<pre class="prettyprint linenums">                    'user_colour'        =&gt; $row['user_colour'], 
+</pre>
+	
+<pre>#
+#-----[ AFTER, ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                    'group_id'            =&gt; '',     
 </pre>
 
+<pre>#
+#-----[ FIND ]------------------------------------------
+#</pre>
+<p>Not a duplicate here, there's an array for guests and an array for registered users</p>
+<pre class="prettyprint linenums">                    'user_colour'        =&gt; $row['user_colour'], 
+</pre>
+
+<pre>#
+#-----[ BEFORE, ADD ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">                    'group_id'            =&gt; $row['group_id'],     
+</pre>			
+
+<pre>#
+#-----[ FIND ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">    for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i) 
+</pre>	
+<pre>#
+#-----[ BEFORE, ADD ]------------------------------------------
+#</pre>
+<p>Make sure we don't display hidden groups</p>
+<pre class="prettyprint linenums">    // Get groups name on the board
+    $sql = 'SELECT group_id, group_name, group_type
+       FROM ' . GROUPS_TABLE . '
+       WHERE group_type &lt;&gt; ' . GROUP_HIDDEN;
+    $result = $db->sql_query($sql);
+    while ($row = $db->sql_fetchrow($result))
+    {
+       $groups_name[$row['group_id']] = ($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name'];
+    }
+    $db->sql_freeresult($result);</pre>	
+
+<pre>#
+#-----[ FIND ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">            'POSTER_AGE'            =&gt; $user_cache[$poster_id]['age'], 
+</pre>	
+
+<pre>#
+#-----[ AFTER, ADD ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">            'POSTER_GROUP'          =&gt; $groups_name[$user_cache[$poster_id]['group_id']],
+</pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">	 &lt;!-- IF postrow.POSTER_FROM --&gt;&lt;dd&gt;&lt;strong&gt;{L_LOCATION}:&lt;/strong&gt; {postrow.POSTER_FROM}&lt;/dd&gt;&lt;!-- ENDIF --&gt;
+</pre>
+
+<pre>#
+#-----[ AFTER, ADD ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums">	&lt;!-- IF postrow.POSTER_GROUP --&gt;&lt;dd&gt;&lt;strong&gt;{L_GROUP}:&lt;/strong&gt; {postrow.POSTER_GROUP}&lt;/dd&gt;&lt;!-- ENDIF --&gt;
+</pre>			
 <p></p>			
 
         </section>
