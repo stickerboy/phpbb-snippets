@@ -13,6 +13,11 @@
       e.preventDefault()
     })
 
+    // Disable certain links in docs
+    $('li.disabled a').click(function (e) {
+      e.preventDefault()
+    })
+	
     // side bar
     $('.bs-docs-sidenav').affix({
       offset: {
