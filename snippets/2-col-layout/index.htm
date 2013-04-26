@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>phpBB Snippets - 2 Column Layout</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="./../../assets/css/bootstrap.css" rel="stylesheet">
+    <link href="./../../assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="./../../assets/css/docs.css" rel="stylesheet">
+    <link href="./../../assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="./../../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./../../assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./../../assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="./../../assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="./../../assets/ico/favicon.png">
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./../../index.html" style="color:#fff;">phpBB Snippets</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="#top">Back to top</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>2 Column Layout</h1>
+	  <p>Allows you to show your forums in a 2 column layout, rather than 1 long list.</p>
+  </div>
+</header>
+
+  <div class="container">
+
+        <section id="top">
+          <div class="page-header">
+            
+          </div>
+          <p class="lead">Please note that I did not write this code, it was written by members of the phpBB Team (credited at the end of this page). This snippet is only supported with prosilver based styles, however there is code for subSilver2 based styles.</p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+includes/functions_display.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        $last_catless = $catless;
+    }  
+</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#</pre>
+<pre class="prettyprint linenums pre-scrollable">    //
+    // Start category based loops
+    // Credits to Noxwizard of phpBB.com for this code
+    //
+
+    //Sort forums by category
+
+    $cat_array = array();
+
+    foreach($forum_rows as $forum)
+    {
+       if ($forum['forum_type'] == FORUM_CAT)
+       {
+          $cat_array[$forum['forum_id']] = $forum;
+       }
+       else
+       {
+          $id = $forum['parent_id'];
+          @$cat_array[$id]['children'][@count(@$cat_array[$id]['children'])] = $forum;
+       }
+    }
+
+    //Loop through the categories
+    foreach($cat_array as $cat)
+    {
+
+    //Category
+    $template-&gt;assign_block_vars('catrow', array(
+       'FORUM_ID'         =&gt; $cat['forum_id'],
+       'FORUM_NAME'         =&gt; $cat['forum_name'],
+       'FORUM_DESC'         =&gt; generate_text_for_display($cat['forum_desc'], $cat['forum_desc_uid'], $cat['forum_desc_bitfield'], $cat['forum_desc_options']),
+       'FORUM_FOLDER_IMG'            =&gt; '',
+       'FORUM_FOLDER_IMG_SRC'   =&gt; '',
+       'FORUM_IMAGE'         =&gt; ($cat['forum_image']) ? '&lt;a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $cat['forum_id']) . '"&gt;&lt;img src="' . $phpbb_root_path . $cat['forum_image'] . '" alt="' . $user-&gt;lang['FORUM_CAT'] . '" /&gt;&lt;/a&gt;' : '',
+       'FORUM_IMAGE_SRC'      =&gt; ($cat['forum_image']) ? $phpbb_root_path . $cat['forum_image'] : '',
+       'CHILDREN_COUNT'      =&gt; count($cat['children']),
+       'U_VIEWFORUM'         =&gt; append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $cat['forum_id']))
+    );
+
+       //Forums under category
+       foreach($cat['children'] as $row)
+       {
+          $visible_forums++;
+          $forum_id = $row['forum_id'];
+          
+          $forum_unread = (isset($forum_tracking_info[$forum_id]) && $row['orig_forum_last_post_time'] &gt; $forum_tracking_info[$forum_id]) ? true : false;
+
+          $folder_image = $folder_alt = $l_subforums = '';
+          $subforums_list = array();
+
+          // Generate list of subforums if we need to
+          if (isset($subforums[$forum_id]))
+          {
+             foreach ($subforums[$forum_id] as $subforum_id =&gt; $subforum_row)
+             {
+                $subforum_unread = (isset($forum_tracking_info[$subforum_id]) && $subforum_row['orig_forum_last_post_time'] &gt; $forum_tracking_info[$subforum_id]) ? true : false;
+
+                if ($subforum_row['display'] && $subforum_row['name'])
+                {
+                   $subforums_list[] = array(
+                      'link'      =&gt; append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $subforum_id),
+                      'name'      =&gt; $subforum_row['name'],
+                      'unread'      =&gt; $subforum_unread,
+                   );
+                }
+                else
+                {
+                   unset($subforums[$forum_id][$subforum_id]);
+                }
+
+                // If one subforum is unread the forum gets unread too...
+                if ($subforum_unread)
+                {
+                   $forum_unread = true;
+                }
+             }
+
+             $l_subforums = (sizeof($subforums[$forum_id]) == 1) ? $user-&gt;lang['SUBFORUM'] . ': ' : $user-&gt;lang['SUBFORUMS'] . ': ';
+             $folder_image = ($forum_unread) ? 'forum_unread_subforum' : 'forum_read_subforum';
+          }
+          else
+          {
+             switch ($row['forum_type'])
+             {
+                case FORUM_POST:
+                   $folder_image = ($forum_unread) ? 'forum_unread' : 'forum_read';
+                break;
+
+                case FORUM_LINK:
+                   $folder_image = 'forum_link';
+                break;
+             }
+          }
+
+          // Which folder should we display?
+          if ($row['forum_status'] == ITEM_LOCKED)
+          {
+             $folder_image = ($forum_unread) ? 'forum_unread_locked' : 'forum_read_locked';
+             $folder_alt = 'FORUM_LOCKED';
+          }
+          else
+          {
+             $folder_alt = ($forum_unread) ? 'NEW_POSTS' : 'NO_NEW_POSTS';
+          }
+          
+          // Create last post link information, if appropriate
+          if ($row['forum_last_post_id'])
+          {
+             $last_post_subject = $row['forum_last_post_subject'];
+             $last_post_time = $user-&gt;format_date($row['forum_last_post_time']);
+             $last_post_url = append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $row['forum_id_last_post'] . '&amp;p=' . $row['forum_last_post_id']) . '#p' . $row['forum_last_post_id'];
+          }
+          else
+          {
+             $last_post_subject = $last_post_time = $last_post_url = '';
+          }
+
+          // Output moderator listing ... if applicable
+
+          $l_moderator = $moderators_list = '';
+          if ($display_moderators && !empty($forum_moderators[$forum_id]))
+          {
+             $l_moderator = (sizeof($forum_moderators[$forum_id]) == 1) ? $user-&gt;lang['MODERATOR'] : $user-&gt;lang['MODERATORS'];
+             $moderators_list = implode(', ', $forum_moderators[$forum_id]);
+          }
+
+          $l_post_click_count = ($row['forum_type'] == FORUM_LINK) ? 'CLICKS' : 'POSTS';
+          $post_click_count = ($row['forum_type'] != FORUM_LINK || $row['forum_flags'] & FORUM_FLAG_LINK_TRACK) ? $row['forum_posts'] : '';
+
+          $s_subforums_list = array();
+
+          foreach ($subforums_list as $subforum)
+          {
+             $s_subforums_list[] = '&lt;a href="' . $subforum['link'] . '" class="subforum ' . (($subforum['unread']) ? 'unread' : 'read') . '"&gt;' . $subforum['name'] . '&lt;/a&gt;';
+          }
+          $s_subforums_list = (string) implode(', ', $s_subforums_list);
+
+          if ($row['forum_type'] != FORUM_LINK)
+          {
+             $u_viewforum = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']);
+          }
+          else
+          {
+             // If the forum is a link and we count redirects we need to visit it
+             // If the forum is having a password or no read access we do not expose the link, but instead handle it in viewforum
+             if (($row['forum_flags'] & FORUM_FLAG_LINK_TRACK) || $row['forum_password'] || !$auth-&gt;acl_get('f_read', $forum_id))
+             {
+                $u_viewforum = append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']);
+             }
+             else
+             {
+                $u_viewforum = $row['forum_link'];
+             }
+                   }
+
+          $template-&gt;assign_block_vars('catrow.forumrow', array(
+             'S_IS_LINK'         =&gt; ($row['forum_type'] == FORUM_LINK) ? true : false,
+             'S_UNREAD_FORUM'      =&gt; $forum_unread,
+             'S_LOCKED_FORUM'      =&gt; ($row['forum_status'] == ITEM_LOCKED) ? true : false,
+             'S_SUBFORUMS'         =&gt; (sizeof($subforums_list)) ? true : false,
+
+             'FORUM_ID'         =&gt; $row['forum_id'],
+             'FORUM_NAME'         =&gt; $row['forum_name'],
+             'FORUM_DESC'         =&gt; generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
+
+             'TOPICS'            =&gt; $row['forum_topics'],
+             $l_post_click_count         =&gt; $post_click_count,
+             
+             'FORUM_FOLDER_IMG'      =&gt; $user-&gt;img($folder_image, $folder_alt),
+             
+             'FORUM_FOLDER_IMG_SRC'   =&gt; $user-&gt;img($folder_image, $folder_alt, false, '', 'src'),
+
+             'FORUM_IMAGE'         =&gt; ($row['forum_image']) ? '&lt;a href="' . append_sid("{$phpbb_root_path}viewforum.$phpEx", 'f=' . $row['forum_id']) . '"&gt;&lt;img src="' . $phpbb_root_path . $row['forum_image'] . '" alt="' . $user-&gt;lang[$folder_alt] . '" /&gt;&lt;/a&gt;' : '',
+             'FORUM_IMAGE_SRC'      =&gt; ($row['forum_image']) ? $phpbb_root_path . $row['forum_image'] : '',
+
+             'LAST_POST_SUBJECT'      =&gt; censor_text($last_post_subject),
+             'LAST_POST_TIME'      =&gt; $last_post_time,
+             'LAST_POSTER'         =&gt; get_username_string('username', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
+             'LAST_POSTER_COLOUR'      =&gt; get_username_string('colour', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
+             'LAST_POSTER_FULL'      =&gt; get_username_string('full', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
+
+             'MODERATORS'         =&gt; $moderators_list,
+             'SUBFORUMS'         =&gt; $s_subforums_list,
+
+             'L_SUBFORUM_STR'      =&gt; $l_subforums,
+             'L_FORUM_FOLDER_ALT'      =&gt; $folder_alt,
+             'L_MODERATOR_STR'      =&gt; $l_moderator,
+
+             'U_VIEWFORUM'         =&gt; $u_viewforum,
+             'U_LAST_POSTER'         =&gt; get_username_string('profile', $row['forum_last_poster_id'], $row['forum_last_poster_name'], $row['forum_last_poster_colour']),
+             'U_LAST_POST'         =&gt; $last_post_url)
+          );
+
+          // Assign subforums loop for style authors
+          foreach ($subforums_list as $subforum)
+          {
+             $template-&gt;assign_block_vars('forumrow.subforum', array(
+                'U_SUBFORUM'      =&gt; $subforum['link'],
+                'SUBFORUM_NAME'   =&gt; $subforum['name'],
+                'S_UNREAD'      =&gt; $subforum['unread'])
+             );
+          }
+       }
+    }
+    //
+    // End category based loops
+    //
+</pre>
+<p>For the next part, you need to replace your entire forumlist_body.html file. I recommend backing up this file in case you ever want to revert back. There is also multiple ways to set this up, more details below.</p>
+
+<p>Change the DEFINE $FORUMS to 1 in this part to specify the max number of forums before it starts putting them into a second column. This is the output:</p>
+<p><span><a class="thumbnail" href="./img/flb1-define1.png"><img src="./img/flb1-define1.png" /></a></span></p>		
+<p>Setting DEFINE $FORUMS = 3 will give this output: (Notice that the 2nd catagory only has 2 forum, so it's displayed as normal).</p>
+<div class="alert alert-info">forumlist_body.html replacement file</div>		
+<pre class="prettyprint linenums pre-scrollable">    &lt;!-- DEFINE $FORUMS = 1 --&gt;
+    &lt;!-- BEGIN catrow --&gt;
+
+       &lt;div class="forabg"&gt;
+          &lt;div class="inner"&gt;&lt;span class="corners-top"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
+             &lt;ul class="topiclist"&gt;
+                &lt;li class="header"&gt;
+                   &lt;dl class="icon"&gt;
+                      &lt;dt&gt;&lt;!-- IF catrow.FORUM_NAME --&gt;&lt;a href="{catrow.U_VIEWFORUM}"&gt;{catrow.FORUM_NAME}&lt;/a&gt;&lt;!-- ELSE --&gt;{L_FORUM}&lt;!-- ENDIF --&gt;&lt;/dt&gt;
+                   &lt;/dl&gt;
+                &lt;/li&gt;
+             &lt;/ul&gt;
+             &lt;!-- IF catrow.CHILDREN_COUNT &gt; $FORUMS --&gt;&lt;div style="float: left; width: 49.95%;"&gt;&lt;!-- ELSE --&gt;&lt;div style="width: 100%"&gt;&lt;!-- ENDIF --&gt;
+                &lt;ul class="topiclist forums"&gt;
+                   &lt;!-- BEGIN forumrow --&gt;
+                      &lt;!-- IF forumrow.S_ROW_COUNT is even or catrow.CHILDREN_COUNT &lt;= $FORUMS --&gt;
+                         &lt;li class="row"&gt;
+                            &lt;dl class="icon" style="background-image: url({forumrow.FORUM_FOLDER_IMG_SRC}); background-repeat: no-repeat;"&gt;
+                               &lt;dt title="{forumrow.FORUM_FOLDER_IMG_ALT}"&gt;
+                                  &lt;!-- IF forumrow.FORUM_IMAGE --&gt;&lt;span class="forum-image"&gt;{forumrow.FORUM_IMAGE}&lt;/span&gt;&lt;!-- ENDIF --&gt;
+                                  &lt;a href="{forumrow.U_VIEWFORUM}" class="forumtitle"&gt;{forumrow.FORUM_NAME}&lt;/a&gt;&lt;br /&gt;
+                                  {forumrow.FORUM_DESC}
+                   &lt;!-- IF forumrow.CLICKS --&gt;
+                      &lt;span&gt;{L_REDIRECTS}: {forumrow.CLICKS}&lt;/span&gt;
+                   &lt;!-- ELSEIF not forumrow.S_IS_LINK --&gt;
+                      &lt;br /&gt;&lt;br /&gt;{forumrow.TOPICS} {L_TOPICS} / {forumrow.POSTS} {L_POSTS} &nbsp;
+                      &lt;!-- IF forumrow.LAST_POST_TIME --&gt; &lt;a href="{forumrow.U_LAST_POST}" title="{forumrow.LAST_POST_TIME}"&gt;{LAST_POST_IMG} {L_LAST_POST}&lt;/a&gt; {L_POST_BY_AUTHOR} {forumrow.LAST_POSTER_FULL}&lt;br /&gt;
+                       &lt;!-- ELSE --&gt;{L_NO_POSTS}&lt;!-- ENDIF --&gt;
+                   &lt;!-- ENDIF --&gt;   
+                                  &lt;!-- IF forumrow.MODERATORS --&gt;
+                                     &lt;br /&gt;&lt;strong&gt;{forumrow.L_MODERATOR_STR}:&lt;/strong&gt; {forumrow.MODERATORS}
+                                  &lt;!-- ENDIF --&gt;
+                                  &lt;!-- IF forumrow.SUBFORUMS and forumrow.S_LIST_SUBFORUMS --&gt;&lt;br /&gt;&lt;strong&gt;{forumrow.L_SUBFORUM_STR}&lt;/strong&gt; {forumrow.SUBFORUMS}&lt;!-- ENDIF --&gt;
+                               &lt;/dt&gt;
+                            &lt;/dl&gt;
+                         &lt;/li&gt;
+                      &lt;!-- ENDIF --&gt;
+                   &lt;!-- END forumrow --&gt;
+                &lt;/ul&gt;
+             &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;!-- IF catrow.CHILDREN_COUNT &gt; $FORUMS --&gt;
+          &lt;div style="float: right; width: 49.95%;"&gt;
+             &lt;ul class="topiclist forums"&gt;
+                &lt;!-- BEGIN forumrow --&gt;           
+                   &lt;!-- IF forumrow.S_ROW_COUNT is odd --&gt;
+                      &lt;li class="row"&gt;
+                         &lt;dl class="icon" style="background-image: url({forumrow.FORUM_FOLDER_IMG_SRC}); background-repeat: no-repeat;"&gt;
+                            &lt;dt title="{forumrow.FORUM_FOLDER_IMG_ALT}"&gt;
+                               &lt;!-- IF forumrow.FORUM_IMAGE --&gt;&lt;span class="forum-image"&gt;{forumrow.FORUM_IMAGE}&lt;/span&gt;&lt;!-- ENDIF --&gt;
+                               &lt;a href="{forumrow.U_VIEWFORUM}" class="forumtitle"&gt;{forumrow.FORUM_NAME}&lt;/a&gt;&lt;br /&gt;
+                               {forumrow.FORUM_DESC}
+                   &lt;!-- IF forumrow.CLICKS --&gt;
+                      &lt;span&gt;{L_REDIRECTS}: {forumrow.CLICKS}&lt;/span&gt;
+                   &lt;!-- ELSEIF not forumrow.S_IS_LINK --&gt;
+                      &lt;br /&gt;&lt;br /&gt;{forumrow.TOPICS} {L_TOPICS} / {forumrow.POSTS} {L_POSTS} &nbsp;
+                      &lt;!-- IF forumrow.LAST_POST_TIME --&gt; &lt;a href="{forumrow.U_LAST_POST}" title="{forumrow.LAST_POST_TIME}"&gt;{LAST_POST_IMG} {L_LAST_POST}&lt;/a&gt; {L_POST_BY_AUTHOR} {forumrow.LAST_POSTER_FULL}&lt;br /&gt;
+                       &lt;!-- ELSE --&gt;{L_NO_POSTS}&lt;!-- ENDIF --&gt;
+                   &lt;!-- ENDIF --&gt;   
+                               &lt;!-- IF forumrow.MODERATORS --&gt;
+                                  &lt;br /&gt;&lt;strong&gt;{forumrow.L_MODERATOR_STR}:&lt;/strong&gt; {forumrow.MODERATORS}
+                               &lt;!-- ENDIF --&gt;
+                               &lt;!-- IF forumrow.SUBFORUMS and forumrow.S_LIST_SUBFORUMS --&gt;&lt;br /&gt;&lt;strong&gt;{forumrow.L_SUBFORUM_STR}&lt;/strong&gt; {forumrow.SUBFORUMS}&lt;!-- ENDIF --&gt;
+                            &lt;/dt&gt;
+                         &lt;/dl&gt;
+                      &lt;/li&gt;
+                   &lt;!-- ENDIF --&gt;
+                &lt;!-- END forumrow --&gt;
+             &lt;/ul&gt;
+          &lt;/div&gt;
+          &lt;!-- ENDIF --&gt;
+
+          &lt;span class="corners-bottom"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
+       &lt;/div&gt;
+
+    &lt;!-- BEGINELSE --&gt;
+       &lt;div class="panel"&gt;
+          &lt;div class="inner"&gt;&lt;span class="corners-top"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
+          &lt;strong&gt;{L_NO_FORUMS}&lt;/strong&gt;
+          &lt;span class="corners-bottom"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+       &lt;/div&gt;
+    &lt;!-- END forumrow --&gt;
+</pre>
+<p>Although the screenshots above don't show it, the above code includes the code to show the last topics/posts from each forum. Here is a screenshot below that shows it. Included is how it would look with a forum image as well.</p>
+<p><span><a class="thumbnail" href="./img/flb1-define1-lpiafi.png"><img src="./img/flb1-define1-lpiafi.png" /></a></span></p>
+<p>Now here is a look at some of the subforum views. Depending on how many subforums you have and what you set the DEFINE at, will change how this displays. These screenshots are based on DEFINE being 1 with 1 and 2 subforums </p>
+<p><span><a class="thumbnail" href="./img/define-1-viewforum-lpiafi.png"><img src="./img/define-1-viewforum-lpiafi.png" /></a></span></p>
+<p><span><a class="thumbnail" href="./img/define-1-viewforum-lpiafi-sub2.png"><img src="./img/define-1-viewforum-lpiafi-sub2.png" /></a></span></p>
+<p>This is all running from a default un-modded phpBB 3.0.2. If i've missed anything, if anything prosilver template-wise doesn't work, please let me know. I would appreciate anyone trying this, to try it on their prosilver template 1st before another style to make sure it works. That way we can work out other style quirks later.</p>
+<p><strong>Credits:</strong></p>
+<ul>
+<li>Noxwizard for the php code and template code</li>
+<li>will_hough for template code</li>
+<li>Lurtinnen for template & CSS code</li>
+<li>halabit - for updating the subSilver2 code</ul>
+	  </section>
+    </div>
+
+	<footer class="footer">
+      <div class="container">
+        <p>`This page was designed and built using the awesome Bootstrap CSS framework from <a target="_blank" href="http://twitter.com/mdo">@mdo</a> and <a target="_blank" href="http://twitter.com/fat">@fat</a>.</p>
+        <p>Code provided here is given as is with no guarantee of support - this code has <strong>not</strong> been tested with the latest phpBB versions.</p>
+        <ul class="footer-links">
+          <li><a href="http://www.phpbb.com/">phpBB.com</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://github.com/phpBB">phpBB Github</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://www.kennycameron.co.uk">Personal Site</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="./../../assets/js/jquery.js"></script>
+    <script src="./../../assets/js/bootstrap-transition.js"></script>
+    <script src="./../../assets/js/bootstrap-modal.js"></script>
+    <script src="./../../assets/js/bootstrap-tab.js"></script>
+    <script src="./../../assets/js/bootstrap-tooltip.js"></script>
+    <script src="./../../assets/js/bootstrap-button.js"></script>
+    <script src="./../../assets/js/bootstrap-collapse.js"></script>
+    <script src="./../../assets/js/bootstrap-affix.js"></script>
+
+    <script src="./../../assets/js/holder/holder.js"></script>
+    <script src="./../../assets/js/google-code-prettify/prettify.js"></script>
+
+    <script src="./../../assets/js/application.js"></script>
+
+  </body>
+</html>
