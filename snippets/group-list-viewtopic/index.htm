@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Group list in viewtopic</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>Group name in viewtopic</h1>
+    <h1>Group list in viewtopic</h1>
+	  <p>Shows a list of all a users groups under their post details in viewtopic</p>
   </div>
 </header>
 
@@ -61,7 +62,10 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=cdog" style="font-weight:bold;">cdog</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1786185">this topic</a>, </p>
+			<p class="lead">Carrying on from <a href="./../group-name-viewtopic/" title="Group name in viewtopic">here</a>, this snippet was requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=nasadows" title=""><strong>nasadows</strong></a> in the <a href="http://www.phpbb.com/community/viewtopic.php?p=11032085#p11032085">same topic</a>. Instead of just showing a posters default group, it lists every group that they are a member of. Only those with permissions to see a group will see it's name in the list, as this snippet make use of the same auth check that is used in the memberlist view profile section.</p>
+
+<p class="lead"><span class="text-error"><strong>*CAUTION*</strong></span>
+This snippet runs quite an expensive query in viewtopic. I haven't looked into trimming it down, so you may want to try and find a way reduce the load caused by this before installing.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
@@ -70,68 +74,41 @@ viewtopic.php
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">            if ($poster_id == ANONYMOUS)
-            { 
+<pre class="prettyprint linenums">        //
+        $postrow = array( 
 </pre>
-	  
+
 <pre>#
-#-----[ FIND ]------------------------------------------
-#
-</pre>
-<pre class="prettyprint linenums">                    'user_colour'        =&gt; $row['user_colour'], 
-</pre>
-	
-<pre>#
-#-----[ AFTER, ADD ]------------------------------------------
+#-----[ BEFORE, ADD ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">                    'group_id'            =&gt; '',     
-</pre>
+<pre class="prettyprint linenums">        // Stolen from memberlist.php - get a dropdown list of all users groups (checking for auths as well)
+        $gsql = 'SELECT g.group_id, g.group_name, g.group_type
+            FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . " ug
+            WHERE ug.user_id = $poster_id
+                AND g.group_id = ug.group_id" . ((!$auth-&gt;acl_gets('a_group', 'a_groupadd', 'a_groupdel')) ? ' AND g.group_type &lt;&gt; ' . GROUP_HIDDEN : '') . '
+                AND ug.user_pending = 0
+            ORDER BY g.group_type, g.group_name';
+        $res = $db-&gt;sql_query($gsql);
+
+        $group_list = array();
+        while ($grow = $db-&gt;sql_fetchrow($res))
+        {
+            $group_list[]    = ($grow['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $grow['group_name']] : $grow['group_name'];
+        }
+        $db-&gt;sql_freeresult($res);    
+        $group_list = implode(', ', $group_list); </pre>
 
 <pre>#
 #-----[ FIND ]------------------------------------------
 #</pre>
 <p>Not a duplicate here, there's an array for guests and an array for registered users</p>
-<pre class="prettyprint linenums">                    'user_colour'        =&gt; $row['user_colour'], 
-</pre>
+<pre class="prettyprint linenums">            'S_IGNORE_POST'            => ($row['hide_post']) ? true : false, </pre>
 
 <pre>#
 #-----[ BEFORE, ADD ]------------------------------------------
 #</pre>
-<pre class="prettyprint linenums">                    'group_id'            =&gt; $row['group_id'],     
-</pre>			
-
-<pre>#
-#-----[ FIND ]------------------------------------------
-#</pre>
-<pre class="prettyprint linenums">    for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i) 
-</pre>	
-<pre>#
-#-----[ BEFORE, ADD ]------------------------------------------
-#</pre>
-<p>Make sure we don't display hidden groups</p>
-<pre class="prettyprint linenums">    // Get groups name on the board
-    $sql = 'SELECT group_id, group_name, group_type
-       FROM ' . GROUPS_TABLE . '
-       WHERE group_type &lt;&gt; ' . GROUP_HIDDEN;
-    $result = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($result))
-    {
-       $groups_name[$row['group_id']] = ($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name'];
-    }
-    $db->sql_freeresult($result);</pre>	
-
-<pre>#
-#-----[ FIND ]------------------------------------------
-#</pre>
-<pre class="prettyprint linenums">            'POSTER_AGE'            =&gt; $user_cache[$poster_id]['age'], 
-</pre>	
-
-<pre>#
-#-----[ AFTER, ADD ]------------------------------------------
-#</pre>
-<pre class="prettyprint linenums">            'POSTER_GROUP'          =&gt; $groups_name[$user_cache[$poster_id]['group_id']],
-</pre>
+<pre class="prettyprint linenums">            'S_GROUP_LIST'        => $group_list, </pre>			
 
 <pre>#
 #-----[ OPEN ]------------------------------------------
@@ -146,9 +123,9 @@ styles/prosilver/template/viewtopic_body.html
 <pre>#
 #-----[ AFTER, ADD ]------------------------------------------
 #</pre>
-<pre class="prettyprint linenums">	&lt;!-- IF postrow.POSTER_GROUP --&gt;&lt;dd&gt;&lt;strong&gt;{L_GROUP}:&lt;/strong&gt; {postrow.POSTER_GROUP}&lt;/dd&gt;&lt;!-- ENDIF --&gt;
+<pre class="prettyprint linenums">	&lt;!-- IF postrow.S_GROUP_LIST --&gt;&lt;dd&gt;&lt;strong&gt;{L_GROUPS}:&lt;/strong&gt; {postrow.S_GROUP_LIST}&lt;/dd&gt;&lt;!-- ENDIF --&gt;
 </pre>			
-<p></p>			
+<p>Please see <a href="https://www.phpbb.com/community/viewtopic.php?p=11033705#p11033705" title="phpBB.com">here</a> if you would like to split each group on to a new line, link the group name to the groups page and add the groups color to the text</p>			
 
         </section>
     </div>
