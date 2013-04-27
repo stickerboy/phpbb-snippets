@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Last Post Subject w/ Trim</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Last Post Subject w/ Trim</h1>
+	  <p>Show the last post subject to the index page of your forum</p>
   </div>
 </header>
 
@@ -61,18 +62,65 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">@<a href="http://twitter.com/13thoughts" title="@13thoughts twitter">13thoughts</a> was looking for this on twitter. Basically this snippet adds the last post subject to the index page of your forums, but if the title is over a certain amount of characters, it gets trimmed (. . .) That way everything stays the same length and generally looks nicer</p> 
+		  <p><img src="./img/lpst.png" alt="Last post subject" /></p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+includes/functions_display.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">            $template->assign_block_vars('forumrow', array(
+                'S_IS_CAT'            => false, </pre>
+<p>You can change the 28 to another number. Play about with it until it loks right for your forum</p>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            $char_limit = 28; 
+            $new_last_post_subject = (utf8_strlen(censor_text($last_post_subject)) > $char_limit + 5) ? (utf8_substr(censor_text($last_post_subject),0,$char_limit) . '...') : censor_text($last_post_subject); </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'LAST_POST_SUBJECT'        => censor_text($last_post_subject), </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'NEW_LAST_POST_SUBJECT'    => $new_last_post_subject, </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
 
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/YOUR_STYLE/template/forumlist_body.html
+#
+#-----[ DIY INSTRUCTIONS ]------------------------------------------
+#
 </pre>
+<p>You're going to want to add the following code in:</p>
+<pre class="prettyprint linenums">   &lt;!-- IF not S_IS_BOT --&gt;&lt;a href="{forumrow.U_LAST_POST}"&gt;{forumrow.NEW_LAST_POST_SUBJECT}&lt;/a&gt;&lt;!-- ELSE --&gt;{forumrow.NEW_LAST_POST_SUBJECT}&lt;!-- ENDIF --&gt;</pre>
+<p>Somewhere around </p>	
+<pre class="prettyprint linenums">    &lt;!-- IF forumrow.LAST_POST_TIME --&gt;</pre>
+<p>As an example, here's what I did for a forum of mine:</p>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                      &lt;!-- IF forumrow.LAST_POST_TIME --&gt;&lt;dfn&gt;{L_LAST_POST}&lt;/dfn&gt; {L_POST_BY_AUTHOR} {forumrow.LAST_POSTER_FULL}
+                      &lt;!-- IF not S_IS_BOT --&gt;&lt;a href="{forumrow.U_LAST_POST}"&gt;{LAST_POST_IMG}&lt;/a&gt; &lt;!-- ENDIF --&gt;&lt;br /&gt;{forumrow.LAST_POST_TIME}&lt;!-- ELSE --&gt;{L_NO_POSTS}&lt;br /&gt;&nbsp;&lt;!-- ENDIF --&gt;&lt;/span&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                      &lt;!-- IF forumrow.LAST_POST_TIME --&gt;&lt;dfn&gt;{L_LAST_POST}&lt;/dfn&gt; &lt;!-- IF not S_IS_BOT --&gt;&lt;a href="{forumrow.U_LAST_POST}"&gt;{forumrow.NEW_LAST_POST_SUBJECT}&lt;/a&gt;&lt;!-- ELSE --&gt;{forumrow.NEW_LAST_POST_SUBJECT}&lt;!-- ENDIF --> &lt;br /> {L_POST_BY_AUTHOR} {forumrow.LAST_POSTER_FULL}
+                      &lt;!-- IF not S_IS_BOT -->&lt;a href="{forumrow.U_LAST_POST}"&gt;{LAST_POST_IMG}&lt;/a> &lt;!-- ENDIF -->&lt;br /&gt;{L_POSTED_ON_DATE} {forumrow.LAST_POST_TIME}&lt;!-- ELSE --&gt;{L_NO_POSTS}&lt;!-- ENDIF --&gt;&lt;/span&gt;</pre>
 
 <p></p>			
 

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - opic title / Post subject cannot be the same</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Topic title / Post subject cannot be the same</h1>
+	  <p>Users have to enter a unique (sic) post subject. Can't be the same as the topic title</p>
   </div>
 </header>
 
@@ -61,19 +62,34 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">I got this idea when reading <a href="http://www.phpbb.com/community/viewtopic.php?f=64&t=1748635">this topic</a> by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=Improfane" style="font-weight:bold;">Improfane</a> on phpbb.com - Got me thinking that maybe there are some forums out there that may benefit from this snippet, so I thought I'd write it up. Very simple, just takes 1 small addition of code in posting.php </p>
+<p class="lead">What it does is check to see if the post subject matches the topic title. If they are the same, the post will not be submitted until it differs. This will not affect editing the 1st post in a topic. Checks are made when replying to a topic and quoting a post.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+posting.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
+<pre class="prettyprint linenums">        // Parse subject    </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            $error[] = $user-&gt;lang['EMPTY_SUBJECT'];
+        } </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        if (!$refresh &amp;&amp; ($mode == 'reply' || $mode == 'quote' || ($mode == 'edit' &amp;&amp; !$post_data['topic_first_post_id'] == $post_id)))    
+        {
+            if ($post_data['post_subject'] == $post_data['topic_title'])
+            {
+                $error[] = "Please use a post subject that is not the same as the topic title";
+            }
+        } </pre>
 <p></p>			
 
         </section>

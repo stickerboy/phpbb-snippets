@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Link quote to original post</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Link quote to original post</h1>
+	  <p>When a post is quoted, it links the user name in the quote to the original post</p>
   </div>
 </header>
 
@@ -59,23 +60,23 @@
 
         <section id="top">
           <div class="page-header">
-            
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">This it not my code, but was posted on phpBB forums somewhere. I have cleaned it up and added a little extra bit that shows the time when the post was quoted.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+posting.php
 #
 #-----[ FIND ]------------------------------------------
-#
-</pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
-<p></p>			
-
+#</pre>	
+<pre class="prettyprint linenums">            $message_parser-&gt;message = '[quote=&quot;' . $post_data['quote_username'] . '&quot;]' . censor_text(trim($message_parser-&gt;message)) . "[/quote]\n"; </pre>
+			
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    //        $message_parser-&gt;message = '[quote=&quot;' . $post_data['quote_username'] . '&quot;]' . censor_text(trim($message_parser-&gt;message)) . "[/quote]\n";
+            $message_parser-&gt;message = '[quote=&quot;' . '[url=' . generate_board_url() . "/viewtopic.$phpEx?p=$post_id#p$post_id" . ']' . $post_data['quote_username'] . ' &raquo; ' . $user-&gt;format_date($post_data['post_time']) . '[/url]' . '&quot;]' . censor_text(trim($message_parser-&gt;message)) . "[/quote]\n";     </pre>
+				
         </section>
     </div>
 

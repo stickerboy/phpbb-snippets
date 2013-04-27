@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Showing information based on group</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Showing information based on group</h1>
+	  <p>The tutorial shows how to show different information depending on what group a user is in</p>
   </div>
 </header>
 
@@ -61,21 +62,44 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Full credit goes to <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=RMcGirr83">RMcGirr83</a> for this code</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+includes/functions.php
 #
 #-----[ FIND ]------------------------------------------
-#
-</pre>	
-<pre class="prettyprint linenums">
-
+#</pre>	
+<pre class="prettyprint linenums">        // application/xhtml+xml not used because of IE
+        header('Content-type: text/html; charset=UTF-8'); 
 </pre>
+			
+<pre>#
+#-----[ BEFORE, ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">         // Check what group a user is in
+        if ( !function_exists('group_memberships') )
+        {
+            include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
+        }
 
-<p></p>			
+        $groups = group_memberships(false,$user->data['user_id']);
+        foreach ($groups as $grouprec)
+        {
+            $template->assign_vars(array(
+                'S_GROUP_' . $grouprec['group_id'] =&gt; true
+            ));
+        } </pre>
 
+<p>Now on any page, you should be able to use this switch</p>	
+<pre class="prettyprint linenums">    &lt;!-- IF S_GROUP_X --&gt;</pre>	
+<p>Just replace X with ID of the group. You can also expand on that and add multiple groups and/or any other template function that is built into phpBB</p>
+<p>If user is in either of the groups</p>
+<pre class="prettyprint linenums">    &lt;!-- IF S_GROUP_1 or S_GROUP_2 --&gt;</pre>
+<p>User has to be in both groups to return true</p>
+<pre class="prettyprint linenums">    &lt;!-- IF S_GROUP_1 and S_GROUP_2 --&gt;</pre>
+<p>Show for all except that group</p>
+<pre class="prettyprint linenums">     &lt;!-- IF not S_GROUP_X --&gt;</pre>				
         </section>
     </div>
 

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Poll Icon</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,7 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Poll Icon</h1>
   </div>
 </header>
 
@@ -61,18 +61,99 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=zkaraca" style="font-weight:bold;">zkaraca</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1737275">this topic</a></p>
 <pre>#
+#-----[ COPY ]------------------------------------------
+#
+icon_topic_poll.gif to root/styles/prosilver/imageset/icon_topic_poll.gif
+#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewforum.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">        'FOLDER_MOVED_IMG'            =&gt; $user-&gt;img('topic_moved', 'TOPIC_MOVED'), </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'POLL_IMG'                    =&gt; $user-&gt;img('icon_topic_poll', 'POLL'), </pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+includes/acp/acp_styles.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">'icons'		=&gt; array(
+				'icon_post_target', </pre>
+<pre>#
+#-----[ IN-LINE FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    'icon_topic_reported', </pre>
+<pre>#
+#-----[ IN-LINE AFTER, ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    'icon_topic_poll', </pre>
 
-</pre>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/acp/styles.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'IMG_ICON_TOPIC_NEWEST'            =&gt; 'Last unread post', </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'IMG_ICON_TOPIC_POLL'            =&gt; 'Poll', </pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/imageset/imageset.cfg
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    img_icon_topic_newest = icon_topic_newest.gif*9*11</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    img_icon_topic_poll = icon_topic_poll.gif*16*16</pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+style/prosilver/template/viewforum_body.html
+#
+#-----[ FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">&lt;dt&lt;!-- IF topicrow.TOPIC_ICON_IMG and S_TOPIC_ICONS --&gt;</pre>
+<pre>#
+#-----[ IN-LINE FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    &lt;!-- IF topicrow.S_UNREAD_TOPIC --&gt;</pre>
+<pre>#
+#-----[ IN-LINE BEFORE, ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    &lt;!-- IF topicrow.S_HAS_POLL --&gt;{POLL_IMG}&lt;!-- ENDIF --&gt;</pre>
+
+<pre>#
+#-----[ DIY INSTRUCTIONS ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">You now need to add the imageset to your forum. To do this, go to your ACP -&gt; Styles Tab -&gt;  Imagesets -&gt;  Edit Prosilver -&gt;  Select "Poll" 
+from the drop down (under General icons). On the image section below that, select "icon_topic_poll.gif" from that dropdown, select yes to include dimensions but leave the boxes blank and then click submit.</pre>
 
 <p></p>			
 

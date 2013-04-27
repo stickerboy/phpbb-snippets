@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Miniature Re-direction Suite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Miniature Re-direction Suite</h1>
+	  <p>Redirect users to a page other than index on login, logout and registration</p>
   </div>
 </header>
 
@@ -61,18 +62,87 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Partial request I have seen many times on phpBB.com - I've used the replacement file as portal.php, as more often than not users want to redirect to their portal page instead - but you can put any file in here of your choosing.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+ucp.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">            case 'register':
+                    if ($user-&gt;data['is_registered'] || isset($_REQUEST['not_agreed']))
+                    {
+                            redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+                    } </pre>
+<pre>
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            case 'register':
+                    if ($user-&gt;data['is_registered'] || isset($_REQUEST['not_agreed']))
+                    {
+                            redirect(append_sid("{$phpbb_root_path}portal.$phpEx"));
+                    } </pre>
+<pre>
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        case 'login':
+            if ($user-&gt;data['is_registered'])
+            {
+                redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
+            }
 
-</pre>
+            login_box(request_var('redirect', "index.$phpEx")); </pre>
+<pre>
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        case 'login':
+            if ($user-&gt;data['is_registered'])
+            {
+                redirect(append_sid("{$phpbb_root_path}portal.$phpEx"));
+            }
+
+            login_box(request_var('redirect', "portal.$phpEx"));  </pre>
+<pre>
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            meta_refresh(3, append_sid("{$phpbb_root_path}index.$phpEx"));
+
+            $message = $message . '&lt;br /&lt;br /&gt;' . sprintf($user-&gt;lang['RETURN_INDEX'], '&lt;a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '"&gt;', '&lt;/a&gt; '); </pre>
+<pre>
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            meta_refresh(3, append_sid("{$phpbb_root_path}portal.$phpEx"));
+
+            $message = $message . '&lt;br /&lt;br /&gt;' . sprintf($user-&gt;lang['RETURN_PORTAL'], '&lt;a href="' . append_sid("{$phpbb_root_path}portal.$phpEx") . '"&gt;', '&lt;/a&gt; '); </pre>
+			
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/common.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'RETURN_INDEX'                =&gt; '%sReturn to the index page%s', </pre>
+<pre>
+#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'RETURN_PORTAL'               =&gt; '%sReturn to the portal page%s', </pre>
 
 <p></p>			
 

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Remove signature on first post</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Remove signature on first post</h1>
+	  <p>Hides the signature of a user from the 1st post of every topic.</p>
   </div>
 </header>
 
@@ -61,19 +62,47 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by shadow in <a href="http://www.rmcgirr83.org" target="_blank">http://www.rmcgirr83.org</a> </p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewtopic.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
+<pre class="prettyprint linenums">        $postrow = array(
+            'POST_AUTHOR_FULL' </pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        $disable_fpsig = ($row['post_id'] != $topic_data['topic_first_post_id']) ? true : false; </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            'RANK_TITLE'        =&gt; $user_cache[$poster_id]['rank_title'], </pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            'DISABLE_FPSIG'     =&gt; $disable_fpsig, </pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    &lt;!-- IF postrow.SIGNATURE --&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    &lt;!-- IF postrow.SIGNATURE and postrow.DISABLE_FPSIG --&gt;</pre>			
 <p></p>			
 
         </section>

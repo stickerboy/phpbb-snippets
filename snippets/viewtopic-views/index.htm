@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB Snippets - Show Views on viewtopic</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Show Views on viewtopic</h1>
+	  <p>Shows the number of topic views next to the pagination info</p>
   </div>
 </header>
 
@@ -61,19 +62,64 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=NguyTieuNhan" style="font-weight:bold;">NguyTieuNhan</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1807205">this topic</a>.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+language/en/viewtopic.php
 #
 #-----[ FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">       'VIEW_TOPIC_POSTS'      =&gt; '%d posts',</pre>
+
+<pre>
+#-----[ AFTER ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">       'VIEW_TOPIC_VIEW'      =&gt; '1 view',
+       'VIEW_TOPIC_VIEWS'      =&gt; '%d views',</pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
 #
-</pre>	
-<pre class="prettyprint linenums">
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_POSTS}</pre>
+<pre>#
+#-----[ IN_LINE FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_POSTS}</pre>
+<pre>#
+#-----[ IN-LINE BEFORE, ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_VIEWS} &bull; </pre>			
+<p>This find is option, if you also want the topic views to show at the bottom of the page</p>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_POSTS}</pre>
+<pre>#
+#-----[ IN_LINE FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_POSTS}</pre>
+<pre>#
+#-----[ IN-LINE BEFORE, ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">    {TOTAL_VIEWS} &bull; </pre>			
 
-</pre>
-
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+viewtopic.php
+#
+#-----[ FIND ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">        'TOTAL_POSTS'            =&gt; ($total_posts == 1) ? $user->lang['VIEW_TOPIC_POST'] : sprintf($user-&gt;lang['VIEW_TOPIC_POSTS'], $total_posts),     </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#</pre>	
+<pre class="prettyprint linenums">        'TOTAL_VIEWS'            =&gt; ($topic_data['topic_views'] == 1) ? $user->lang['VIEW_TOPIC_VIEWS'] : sprintf($user-&gt;lang['VIEW_TOPIC_VIEWS'], $topic_data['topic_views']), </pre>			
 <p></p>			
 
         </section>
