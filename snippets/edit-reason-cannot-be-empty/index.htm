@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>Edit Reason cannot be empty - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Edit Reason cannot be empty</h1>
+	  <p>Require users to enter and edit reason when editing their post</p>
   </div>
 </header>
 
@@ -61,20 +62,42 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=TheMarauder" style="font-weight:bold;">TheMarauder</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1514055">this topic</a>, this snippet forces users to enter an edit reason when editing their post. Their post will not be submitted until there is at least 1 character in the edit reason box.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+posting.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
-<p></p>			
+<pre class="prettyprint linenums">             $error[] = sprintf($user-&gt;lang['IP_BLACKLISTED'], $user-&gt;ip, $dnsbl[1]);
+          }
+       } </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        if (empty($post_data['post_edit_reason']) &amp;&amp; $mode == 'edit' &amp;&amp; $auth-&gt;acl_get('m_edit', $forum_id) &amp;&amp; ($user-&gt;data['user_id'] != $post_data['poster_id']))
+       {
+          $error[] = $user-&gt;lang['EDIT_REASON_EMPTY'];       
+       } </pre>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/posting.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'EDIT_REASON'            =&gt; 'Reason for editing this post',</pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<p>Feel free to change the following text to your liking</p>
+<pre class="prettyprint linenums">       'EDIT_REASON_EMPTY'       =&gt; 'You are required to enter an edit reason before submitting',</pre>
+<p>Right now users will have to click the "back" button in their browser so they return to the edit screen. I'm not sure if a link to the posting/edit screen would work as it may wipe out any edits the user has made. Credit goes to <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=RMcGirr83" style="font-weight:bold;">RMcGirr83</a> for updates made to this snippet.</p>			
 
         </section>
     </div>

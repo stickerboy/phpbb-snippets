@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>Tweet this topic - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Tweet this topic</h1>
+	  <p>Sends a link to a topic to Twitter. Hashtags, topic title and ShortURL's are optional</p>
   </div>
 </header>
 
@@ -61,20 +62,87 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=andrew55" style="font-weight:bold;">andrew55</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1486425">this topic</a>, this snippet allows you to tweet this topic. If you are not logged in when you click the link, simply log in and you will be redirected with the tweet still in tact.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewtopic.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">    // Send vars to template  </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    $hashtag        = ' #phpBB #6StringMODs'; </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'WARN_IMG'         =&gt; $user->img('icon_user_warn', 'WARN_USER'),</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'TWEET_TOPIC'      =&gt; urlencode('Read This: ') . generate_board_url() . "/viewtopic.$phpEx?f=$forum_id%26t=$topic_id" . htmlspecialchars(urlencode($hashtag)),</pre>
 
-</pre>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/viewtopic.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'SUBMIT_VOTE'         =&gt; 'Submit vote',</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'TWEET_TOPIC'         =&gt; 'Tweet this topic',</pre>
 
-<p></p>			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    &lt;/h2&gt;</pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">     &lt;span class="tweet-link"&gt;&lt;a href="http://twitter.com/home?status={TWEET_TOPIC}" class="tweet-link" title="{L_TWEET_TOPIC}"&gt;&lt;/a&gt;&lt;/span&gt;</pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/theme/colours.css
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    a.right:hover {
+       color: #5E7BAA;
+    }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .tweet-link a {
+       float: left;
+       background-image: url("{T_THEME_PATH}/images/twitter-logo.png");
+       padding-left:18px;
+       height: 18px;
+       background-repeat: no-repeat;
+       position: absolute;
+    }</pre>
+<p>Place this image in your <strong>./styles/STYLE_NAME/theme/images/</strong> folder</p>
+<pre><img src="./img/twitter-logo.png" alt="Twitter Logo" /></pre>		
 
         </section>
     </div>

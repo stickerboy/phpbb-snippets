@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>Minimum time to register - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Minimum time to register</h1>
+	  <p>Sets a minimum time limit that must pass before the submit button on the registration page is enabled</p>
   </div>
 </header>
 
@@ -61,19 +62,122 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=sharky86" style="font-weight:bold;">sharky86</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1602045">this topic</a>, this is a feature that actually used to be part of phpBB 3 but was removed as of 3.0.1. It adds a minimum time limit (configurable in the ACP 'User Registration Settings' Page) that has to be passed before the submit button on the registration page is enabled.</p>
+<pre>#
+#-----[ SQL ]------------------------------------------
+#
+</pre>
+<pre class="prettyprint linenums">    INSERT INTO phpbb_config (config_name, config_value) VALUES ('min_time_reg', '5');
+    INSERT INTO phpbb_config (config_name, config_value) VALUES ('min_time_terms', '2');</pre>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+includes/acp/acp_board.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">                            'max_reg_attempts'        =&gt; array('lang' =&gt; 'REG_LIMIT',                'validate' =&gt; 'int',    'type' =&gt; 'text:4:4', 'explain' =&gt; true),  </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                            'min_time_reg'            =&gt; array('lang' =&gt; 'MIN_TIME_REG',            'validate' =&gt; 'int',    'type' =&gt; 'text:3:3', 'explain' =&gt; true, 'append' =&gt; ' ' . $user-&gt;lang['SECONDS']),
+                            'min_time_terms'        =&gt; array('lang' =&gt; 'MIN_TIME_TERMS',        'validate' =&gt; 'int',    'type' =&gt; 'text:3:3', 'explain' =&gt; true, 'append' =&gt; ' ' . $user-&gt;lang['SECONDS']),  </pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+includes/ucp/ucp_register.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            $user_lang        = request_var('lang', $user-&gt;lang_name); </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            // not so fast, buddy
+            if (($submit &amp;&amp; !check_form_key('ucp_register', false, '', false, $config['min_time_reg']))
+                || (!$submit &amp;&amp; !check_form_key('ucp_register_terms', false, '', false, $config['min_time_terms'])))
+            {
+                $agreed = false;
+            } </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                        'S_UCP_ACTION'        =&gt; append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register' . $add_lang . $add_coppa), </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                        'S_TIME'            =&gt; 1000 * ((int) $config['min_time_terms']), </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                )
+            );
 
-</pre>
+            //
+            $user->profile_fields = array(); </pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'S_TIME'            =&gt; 1000 * ((int) $config['min_time_reg']), </pre>
 
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/acp/board.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'MIN_CHARS'                    =&gt; 'Min', </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'MIN_TIME_REG'                =&gt; 'Minimum time for registration',
+        'MIN_TIME_REG_EXPLAIN'        =&gt; 'The registration form cannot be submitted before this time has passed.',
+        'MIN_TIME_TERMS'              =&gt; 'Minimum time for accepting terms',
+        'MIN_TIME_TERMS_EXPLAIN'      =&gt; 'The terms page cannot be skipped before this time has passed.', </pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/ucp_register.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">          document.forms['register'].submit.click();
+       }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       function disable(disabl, name)
+       {
+          document.getElementById(name).disabled = disabl;
+          if (disabl)
+          {
+             document.getElementById(name).className = 'button1 disabled';
+          }
+          else
+          {
+             document.getElementById(name).className = 'button1 enabled';
+          }
+       }
+       
+       &lt;!-- IF S_TIME --&gt;
+          onload_functions.push('disable(true, "submit")');
+          setTimeout('disable(false, "submit")', {S_TIME});
+       &lt;!-- ENDIF --&gt;</pre>
 <p></p>			
 
         </section>

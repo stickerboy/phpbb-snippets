@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>Tweet this page - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Tweet this page</h1>
+	  <p>Sends a link to any page to Twitter. Hashtags and ShortURL's are optional</p>
   </div>
 </header>
 
@@ -61,20 +62,99 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Same idea as my "<a href="./../tweet-this-topic/" title="Tweet this topic">Tweet this topic</a>" and "<a href="./../tweet-this-post/" title="Tweet this post">Tweet this post</a>" snippets.</p>
+			<p class="alert alert-info">I realise that some web hosts may block the use of file_get_contents, but there are many workarounds available.<br /> A quick Google search for an <a href="http://www.google.com/search?q=alternative%20to%20file_get_contents" title="Alternative to file_get_contents">alternative to file_get_contents</a> should do the trick</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+includes/functions.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
+<pre class="prettyprint linenums">    /**
+    * Generate page header
+    */ </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    /**
+    * Put in a long URL, get a short one back out
+    * http://www.scripting.com/stories/2007/06/27/tinyurlHasAnApi.html
+    * http://fyneworks.blogspot.com/2008/08/tiny-url-api.html
+    */
+    function TinyURL($u)
+    {
+        return file_get_contents('http://tinyurl.com/api-create.php?url=' . urlencode($u));
+    }
 </pre>
-
-<p></p>			
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            'ROOT_PATH'            =&gt; $phpbb_root_path, </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            'TWEET_PAGE'            =&gt; urlencode('Check out this page: ') . TinyURL(generate_board_url() . $_SERVER['REQUEST_URI']), </pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/common.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>
+<pre class="prettyprint linenums">       'TRACKED_PHP_ERROR'   =&gt; 'Tracked PHP errors: %s',</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'TWEET_PAGE'         =&gt; 'Tweet this page',</pre>
+			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/overall_header_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre>Somewhere in the header that you think would suit</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">     &lt;span class="tweet-link"&gt;&lt;a href="http://twitter.com/home?status={TWEET_PAGE}" class="tweet-link" title="{L_TWEET_PAGE}"&gt;&lt;/a&gt;&lt;/span&gt;</pre>
+<p>If you have already installed "<strong>Tweet this topic/post</strong>", then you can skip the next 2 steps and go straight to purging your cache</p>
+<pre>
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/theme/colours.css
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    a.right:hover {
+       color: #5E7BAA;
+    }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .tweet-link a {
+       float: left;
+       background-image: url("{T_THEME_PATH}/images/twitter-logo.png");
+       padding-left:18px;
+       height: 18px;
+       background-repeat: no-repeat;
+       position: absolute;
+    }</pre>
+<p>Place this image in your <strong>./styles/STYLE_NAME/theme/images/</strong> folder</p>
+<pre><img src="./img/twitter-logo.png" alt="Twitter Logo" /></pre>			
 
         </section>
     </div>

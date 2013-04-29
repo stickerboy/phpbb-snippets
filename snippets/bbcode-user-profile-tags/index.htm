@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>[BBCODE] User (Profile) Tags - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>[BBCODE] User (Profile) Tags</h1>
+	  <p>This simple little BBCode allows you to easily link to a users profile.</p>
   </div>
 </header>
 
@@ -61,19 +62,19 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=jackinthebox" style="font-weight:bold;">jackinthebox</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=46&t=1511965">this topic</a>. Please note that by default, profile pages are hidden from public view in phpBB 3. You can change this, but it's not recommended. Keep this in mind if you plan on linking to another site like phpBB.com</p>
 <pre>#
-#-----[ OPEN ]------------------------------------------
+#-----[ BBCODE USAGE ]------------------------------------------
 #
-
-#
-#-----[ FIND ]------------------------------------------
+</pre>
+<pre class="prettyprint linenums">[user]{TEXT}[/user]</pre>
+<pre>#
+#-----[ HTML REPLACEMENT ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
+<pre class="prettyprint linenums">    &lt;a href="memberlist.php?mode=viewprofile&amp;un={TEXT}" style="font-weight: bold;">{TEXT}&lt;/a&gt;</pre>
+<p>Change the URL to something like this if you want to link to a phpBB.com profile. All you need to do is specify the username:</p>	
+<pre class="prettyprint linenums">    &lt;a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&amp;un={TEXT}" style="font-weight: bold;">{TEXT}&lt;/a&gt;</pre>
 <p></p>			
 
         </section>

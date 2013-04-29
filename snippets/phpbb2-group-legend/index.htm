@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>phpBB2 style Group Legend display - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>phpBB2 style Group Legend display</h1>
+	  <p>Display group legend on the index like it was in good 'ol phpBB 2!</p>
   </div>
 </header>
 
@@ -61,20 +62,58 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=princexxx" style="font-weight:bold;">princexxx</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1520885">this topic</a>, this snippet will modify the group legend on the index too look like it did back on phpBB2.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+index.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">    $legend = array();
+    while ($row = $db-&gt;sql_fetchrow($result))
+    {
+        $colour_text = ($row['group_colour']) ? ' style="color:#' . $row['group_colour'] . '"' : '';
+        $group_name = ($row['group_type'] == GROUP_SPECIAL) ? $user-&gt;lang['G_' . $row['group_name']] : $row['group_name'];
 
-</pre>
+        if ($row['group_name'] == 'BOTS' || ($user-&gt;data['user_id'] != ANONYMOUS &amp;&amp; !$auth-&gt;acl_get('u_viewprofile')))
+        {
+            $legend[] = '&lt;span' . $colour_text . '&gt;' . $group_name . '&lt;/span&gt;';
+        }
+        else
+        {
+            $legend[] = '&lt;a' . $colour_text . ' href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '"&gt;' . $group_name . '&lt;/a&gt;';
+        }
+    }
+    $db-&gt;sql_freeresult($result);
 
-<p></p>			
+    $legend = implode(', ', $legend);  </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    $legend = array();
+    while ($row = $db-&gt;sql_fetchrow($result))
+    {
+        $colour_text = ($row['group_colour']) ? ' style="color:#' . $row['group_colour'] . '"' : '';
+        $group_name = ($row['group_type'] == GROUP_SPECIAL) ? $user-&gt;lang['G_' . $row['group_name']] : $row['group_name'];
+
+        if ($row['group_name'] == 'BOTS' || ($user->data['user_id'] != ANONYMOUS &amp;&amp; !$auth-&gt;acl_get('u_viewprofile')))
+        {
+            $legend[] = '[ &lt;span' . $colour_text . '&gt;' . $group_name . '&lt;/span&gt; ]';
+        }
+        else
+        {
+            $legend[] = '[ &lt;a' . $colour_text . ' href="' . append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=group&amp;g=' . $row['group_id']) . '"&gt;' . $group_name . '&lt;/a&gt; ]';
+        }
+    }
+    $db-&gt;sql_freeresult($result);
+
+    $legend = implode(' ', $legend);  </pre>
+<p><img src="./img/legend-old.png" alt="Group legend before" /></p>
+<p><img src="./img/legend-old.png" alt="Group legend after" /></p>
+<p>You can easily play about with the separators. The brackets were added to <strong>$legend[]</strong> and the spacing is done here - <strong>$legend = implode(' ', $legend);</strong> (that's where I removed the comma from.)</p>			
 
         </section>
     </div>
