@@ -52,7 +52,7 @@
 <header class="jumbotron subhead" id="overview">
   <div class="container">
     <h1>Articles counter</h1>
-	  <p></p>
+	  <p>Counts posts in a certain forum and displays the count in viewtopic</p>
   </div>
 </header>
 
@@ -62,18 +62,64 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">This snippet will show a count of the users posts or 'articles' from a certain forum, underneath their profile information / avatar in a topic. To keep things as simple as possible the forum id is hard coded into viewtopic, so if you change the forum id you'll have to manually update viewtopic.php as well.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewtopic.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums">        //
+        $postrow = array( </pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        $article_forum_id = '2'; // Remember to change this to the id of the forum you are using
 
-<p></p>			
+        $sql = 'SELECT COUNT(*) AS num_articles
+            FROM ' . POSTS_TABLE . '
+            WHERE forum_id = ' . $article_forum_id . '
+                AND poster_id = ' . $poster_id;
+        $result = $db-&gt;sql_query($sql);
+        $total_articles = (int) $db-&gt;sql_fetchfield('num_articles');
+        $db-&gt;sql_freeresult($result);</pre>
+            
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/viewtopic.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'ATTACHMENT'                  =&gt; 'Attachment',</pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>
+<p>Change 'Articles' to any other word if you don't want to use that</p>
+<pre class="prettyprint linenums">       'ARTICLES'                    =&gt; 'Articles',</pre>
+            
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">          &lt;!-- IF postrow.POSTER_FROM --&gt;&lt;dd&gt;&lt;strong&gt;{L_LOCATION}:&lt;/strong&gt; {postrow.POSTER_FROM}&lt;/dd&gt;&lt;!-- ENDIF --&gt;</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">          &lt;!-- IF postrow.POSTER_ARTICLES &gt; 0 --&gt;&lt;dd&gt;&lt;strong&gt;{L_ARTICLES}:&lt;/strong&gt; {postrow.POSTER_ARTICLES}&lt;/dd&gt;&lt;!-- ENDIF --&gt;</pre>
+<p>The above template code hill hide the article count from users with no articles in that forum. If you'd rather that a 0 count was shown, use this code instead</p>
+<pre class="prettyprint linenums">          &lt;!-- IF postrow.POSTER_ARTICLES --&gt;&lt;dd&gt;&lt;strong&gt;{L_ARTICLES}:&lt;/strong&gt; {postrow.POSTER_ARTICLES}&lt;/dd&gt;&lt;!-- ENDIF --&gt;</pre>
+<p><img src="./img/article_counter.png" alt="Article Counter" /></p>			
 
         </section>
     </div>

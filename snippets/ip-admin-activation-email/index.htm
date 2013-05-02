@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>IP Address in activation email - phpBB Snippets</title>
+    <title>IP Address in admin activation email - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,8 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>IP Address in activation email</h1>
-	  <p></p>
+    <h1>IP Address in admin activation email</h1>
+	  <p>Adds a users registration IP Address to the admin activation email</p>
   </div>
 </header>
 
@@ -62,18 +62,48 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=felony34" style="font-weight:bold;">felony34</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1493825">this topic</a></p>
+            <p class="lead">Please note that if you do not use admin activation on your forums, then this snippet is useless to you</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+includes/ucp/ucp_register.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums">                                $messenger-&gt;assign_vars(array(
+                                    'USERNAME'          =&gt; htmlspecialchars_decode($data['username']),
+                                    'U_USER_DETAILS'    =&gt; "$server_url/memberlist.$phpEx?mode=viewprofile&amp;u=$user_id",
+                                    'U_ACTIVATE'        =&gt; "$server_url/ucp.$phpEx?mode=activate&amp;u=$user_id&amp;k=$user_actkey")
+                                ); </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                                $messenger->assign_vars(array(
+                                    'USERNAME'          =&gt; htmlspecialchars_decode($data['username']),
+                                    'USER_IP'           =&gt; $user-&gt;ip,
+                                    'U_USER_DETAILS'    =&gt; "$server_url/memberlist.$phpEx?mode=viewprofile&amp;u=$user_id",
+                                    'U_ACTIVATE'        =&gt; "$server_url/ucp.$phpEx?mode=activate&amp;u=$user_id&amp;k=$user_actkey")
+                                ); </pre>
 
-<p></p>			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/email/admin_activate.txt
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    Use this link to view the user's profile:</pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    Registered IP Address: {USER_IP}</pre>
+<p>It's really up to you where you put <strong>{USER_IP}</strong> in that file, as long as it's there.<br />
+Change the text to your own liking</p>			
 
         </section>
     </div>

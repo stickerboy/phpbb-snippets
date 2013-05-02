@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>Social Network Buttons using CPF's  - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>Social Network Buttons using CPF's</h1>
+      <p>Add some new social network contacts using phpBB's custom profile fields</p>
   </div>
 </header>
 
@@ -61,20 +62,181 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p>There is already quite a nice MOD on the phpBB forums called <a href="http://www.phpbb.com/community/viewtopic.php?f=70&t=1785835&hilit=social+networking+buttons" title="Social Networking Site Buttons">Social Networking Site Buttons</a> (athough this now seems to have been abandoned). I was interested in getting a similar functionality, but I didn't want to go through all the hassle of installing that huge MOD. That's when I got the idea of using Custom Profile Fields - it's already built in into phpBB, just needs a few tweaks.</p>
+            <p>It would be nice if phpBB could allow links/images in custom profile fields by default, but we can't have everything I know. Maybe in 3.1 or 3.2 we might see a more updated functionality. For now, you can follow this tutorial to achieve the results I have. This tutorial is designed for board owners who are using prosilver or a prosilver based style. There is no code here for subSilver2 based styles, but it shouldn't be too hard to work it out yourself.</p>
+            <p>First off, you want to make sure you are using the latest version of phpBB. At the time or writing this tutorial, it was 3.0.6, which is perfect as CPF's have been redesigned to allow them to be shown in different areas a lot easier. Now you set up the fields that you want to add. In this tutorial, I will use twitter - you can exchange this for any other SN Site.</p>
+            <p>New CPF's can be added via your ACP (Admin Control Panel) -&gt; Users &amp; Groups Tab -&gt; Custom Profile Fields. Create a new <strong>single text field</strong> and call it "twitter" (w/o quotes). Set "Publicly display profile field:" to yes and tick "Display in user control panel:" and "Display on viewtopic screen:". It's up to you if you want to tick any of the other options, they are not necessary but you may want to include them. It should look a bit like this so far:</p>
+            <p><a href="./img/twitter-cpf.png" class="thumbnail"><img src="./img/twitter-cpf.png" alt="Twitter Custom Profile Field" /></a></p>
+            <p>The input boxes at the very bottom, as what will be shown to the user on the profile page when they go to enter in their details. Keep a note of the field name, we'll need this a little later on.</p>
+            <p>For the profile specific options, I set the length of the input box to 20 and the max characters at 30. Again, feel free to modify these to your liking. Min characters is set at 0. Field validation should probably be set to Alphanumeric and spacers (although twitter only allows underscores as a spacer). Ok, now we have out field set up, go to your profile and type in your twitter username and save. Check your profile page and viewtopic and make sure that it shows up properly. </p>
+            <p>Now, it's time to start messing with the code. We'll start off with the profile page, as it's the easier of the 2. </p>
+          
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+styles/YOUR_STYLE/template/memberlist_view.html
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
+<pre class="prettyprint linenums">          &lt;!-- BEGIN custom_fields --&gt;&lt;dt&gt;{custom_fields.PROFILE_FIELD_NAME}:&lt;/dt&gt; &lt;dd&gt;{custom_fields.PROFILE_FIELD_VALUE}&lt;/dd&gt;&lt;!-- END custom_fields --&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
 </pre>
+<p>Essentially we're just hiding this information. You can delete it if you like, just remember to take a back up of your file beforehand. The reason we do this, is so that we don't end up with duplicate fields showing on the page, you'll understand in a minute ;) The downside of doing this, is that it will affect all other custom profile fields.</p>
+<pre class="prettyprint linenums">          &lt;!-- BE-GIN custom_fields &lt;dt&gt;{custom_fields.PROFILE_FIELD_NAME}:&lt;/dt&gt; &lt;dd&gt;{custom_fields.PROFILE_FIELD_VALUE}&lt;/dd&gt; EN-D custom_fields --&gt;</pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                   &lt;!-- IF postrow.U_JABBER --&gt;&lt;li class="jabber-icon">&lt;a href="{postrow.U_JABBER}" onclick="popup(this.href, 550, 320); return false;" title="{L_JABBER}"&gt;&lt;span&gt;{L_JABBER}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                   &lt;!-- BEGIN custom_fields --&gt;
+                            &lt;!-- IF postrow.custom_fields.PROFILE_FIELD_NAME eq "Twitter" --&gt;&lt;li class="twitter-icon"&gt;&lt;a href="http://twitter.com/{postrow.custom_fields.PROFILE_FIELD_VALUE}" title="{L_TWITTER}"&gt;&lt;span&gt;{L_TWITTER}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;
+                     &lt;!-- END custom_fields --&gt;</pre>
+<p>Notice this part:</p>
+<pre class="prettyprint linenums">     &lt;!-- IF postrow.custom_fields.PROFILE_FIELD_NAME eq "Twitter" --&gt;</pre>
+<p>Make sure and replace Twitter with what ever you called the field - remember from earlier? If you can't remember, just pop back to the ACP and take a look. If it has spaces, remember to include these as well. Now save and upload that file, clear your cache and check your profile page. If all went well, you should now have a link to your twitter page in the Contact area of that page.</p>
+<p>On to viewtopic - here we are going to start by doing something similar to what we did with the profile. </p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/YOUR_STYLE/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">          &lt;!-- BEGIN custom_fields --&gt;
+             &lt;dd&gt;&lt;strong&gt;{postrow.custom_fields.PROFILE_FIELD_NAME}:&lt;/strong&gt; {postrow.custom_fields.PROFILE_FIELD_VALUE}&lt;/dd&gt;
+          &lt;!-- END custom_fields --&gt;
+</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>
+<p>Again, like before, you can delete this or comment it out</p>
+<pre class="prettyprint linenums">          &lt;!-- BEG-IN custom_fields 
+             &lt;dd&gt;&lt;strong&gt;{postrow.custom_fields.PROFILE_FIELD_NAME}:&lt;/strong&gt; {postrow.custom_fields.PROFILE_FIELD_VALUE}&lt;/dd&gt;
+           E-ND custom_fields --&gt;
+</pre>           
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>            
+<pre class="prettyprint linenums">                   &lt;!-- IF postrow.U_JABBER --&gt;&lt;li class="jabber-icon"&gt;&lt;a href="{postrow.U_JABBER}" onclick="popup(this.href, 550, 320); return false;" title="{L_JABBER}"&gt;&lt;span&gt;{L_JABBER}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;</pre> 
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>            
+<pre class="prettyprint linenums">                   &lt;!-- BEGIN custom_fields --&gt;
+                            &lt;!-- IF postrow.custom_fields.PROFILE_FIELD_NAME eq "Twitter" --&gt;&lt;li class="twitter-icon"&gt;&lt;a href="http://twitter.com/{postrow.custom_fields.PROFILE_FIELD_VALUE}" title="{L_TWITTER}"&gt;&lt;span&gt;{L_TWITTER}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;
+                     &lt;!-- END custom_fields --&gt;</pre> 
+            
+<p>If you would rather not bother with adding a new language variable, you can replace {L_TWITTER} with Twitter.</p>
+<p>Now, we need some shiny buttons to display on the page. I had a couple created for me, I made some myself and I also used some from the SNB Site MOD. If you do use images from that MOD, I would suggest adding a note somewhere - just out of courtesy. Once you have you image, it needs to be uploaded to <strong>styles/YOUR_STYLE/imageset/</strong>.</p>
+<p>You will need to update the imageset file and tell it that there is a new image:</p>            
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/YOUR_STYLE/imageset/imageset.cfg
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    img_icon_contact_jabber = icon_contact_jabber.gif*20*20</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    img_icon_contact_twit = icon_contact_twit.gif*20*20</pre>
 
-<p></p>			
+<p>Next, we create the CSS to allow the image to show on the page.</p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/YOUR_STYLE/theme/buttons.css
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .web-icon, .web-icon a         { background: none top left no-repeat; }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .twitter-icon, .twitter-icon a      { background: none top left no-repeat; }</pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .twitter-icon, .twitter-icon a      { background: none top left no-repeat; }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    ul.profile-icons li.twitter-icon   { width: {IMG_ICON_CONTACT_TWIT_WIDTH}px; height: {IMG_ICON_CONTACT_TWIT_HEIGHT}px; }</pre>
+
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/YOUR_STYLE/theme/colours.css
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .web-icon, .web-icon a            { background-image: url("{IMG_ICON_CONTACT_WWW_SRC}"); }</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    .twitter-icon, .twitter-icon a         { background-image: url("{IMG_ICON_CONTACT_TWIT_SRC}"); }</pre>
+
+<p>Lastly, we update the acp styles files</p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+includes/acp/acp_styles.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'buttons'    =&gt; array(
+                    'icon_back_top',  </pre>
+<pre>#
+#-----[ IN-LINE FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    'icon_contact_www',  </pre>
+<pre>#
+#-----[ IN-LINE AFTER, ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'IMG_ICON_CONTACT_WWW'            =&gt; 'Website', </pre>
+
+<pre>
+#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/acp/style.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'IMG_ICON_CONTACT_WWW'            =&gt; 'Website', </pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        'IMG_ICON_CONTACT_TWIT'           =&gt; 'Twitter', </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>
+<p>That's pretty much it. Make sure to now refresh your theme and imageset and purge the cache. Now go to viewtopic and marvel at your new button. You can easily repeat the process for other sites. - Facebook, Myspace, Flickr, Last.fm, etc.</p>			
 
         </section>
     </div>
