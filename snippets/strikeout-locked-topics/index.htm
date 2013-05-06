@@ -52,7 +52,7 @@
 <header class="jumbotron subhead" id="overview">
   <div class="container">
     <h1>Strikeout locked topics</h1>
-	  <p></p>
+	  <p>Shows locked topics with a line through them</p>
   </div>
 </header>
 
@@ -62,17 +62,79 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">Global Annoucnements, Announcements &amp; Stickies remain untouched. Note that the following script enables this board wide. If you would like a per-forum option, see urther down</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewforum.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums">            // Send vars to template   </pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">            if ($row['topic_type'] == POST_NORMAL)
+            {    
+                $strike_title = ($row['topic_status'] == ITEM_LOCKED) ? '&lt;span style="text-decoration: line-through"&gt;' . censor_text($row['topic_title']) . '&lt;/span&gt;' : censor_text($row['topic_title']); 
+            }
+            else
+            {
+                $strike_title = censor_text($row['topic_title']);            
+            }  </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'TOPIC_TITLE'        =&gt; censor_text($row['topic_title']),  </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                'TOPIC_TITLE'        =&gt; $strike_title,  </pre>
 
+<pre>#
+#-----[ ALTERNATIVE REPLACEMENTS ]------------------------------------------
+#
+</pre>
+<p>If you would like to only strike out titles on in selected forums, use the following code instead of the 1st 'before add'.</p>
+<pre class="prettyprint linenums">            $strike_forums = array("1", "2", "3"); // replace 1, 2, 3 with your forum ID's. Add/remove as necessary
+
+            if (in_array($forum_id, $strike_forums))   
+            {
+                if ($row['topic_type'] == POST_NORMAL)
+                {   
+                    $strike_title = ($row['topic_status'] == ITEM_LOCKED) ? '&lt;span style="text-decoration: line-through"&gt;' . censor_text($row['topic_title']) . '&lt;/span&gt;' : censor_text($row['topic_title']);
+                }
+                else if ($row['topic_type'] == (POST_GLOBAL || POST_ANNOUCE || POST_STICKY))
+                {   
+                    $strike_title = censor_text($row['topic_title']);   
+                }
+            }
+            else
+            {
+                $strike_title = censor_text($row['topic_title']);   
+            } </pre>
+<p>If you would to disable strikes only in selected forums, use the following code instead of the 1st 'before add'.</p>
+<pre class="prettyprint linenums">            $strike_forums = array("1", "2", "3"); // replace 1, 2, 3 with your forum ID's. Add/remove as necessary
+
+            if (!in_array($forum_id, $strike_forums))   
+            {
+                $strike_title = censor_text($row['topic_title']);
+            }
+            else
+            {
+                if ($row['topic_type'] == POST_NORMAL)
+                {   
+                    $strike_title = ($row['topic_status'] == ITEM_LOCKED) ? '&lt;span style="text-decoration: line-through">' . censor_text($row['topic_title']) . '&lt;/span&gt;' : censor_text($row['topic_title']);
+                }
+                else if ($row['topic_type'] == (POST_GLOBAL || POST_ANNOUCE || POST_STICKY))
+                {   
+                    $strike_title = censor_text($row['topic_title']);   
+                }
+            }  </pre>
 <p></p>			
 
         </section>

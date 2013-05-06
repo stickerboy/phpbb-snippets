@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>'Log me in automatically' checked by default - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>'Log me in automatically' checked by default</h1>
+      <p>Does exactly as it says on the tin</p>
   </div>
 </header>
 
@@ -61,18 +62,36 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Tired of clicking the box? Here's the fix so you don't have to.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+styles/prosilver/template/index_body.html
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">                | &lt;label for="autologin"&gt;{L_LOG_ME_IN} &lt;input type="checkbox" name="autologin" id="autologin" /&gt;&lt;/label&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                | &lt;label for="autologin"&gt;{L_LOG_ME_IN} &lt;input type="checkbox" name="autologin" id="autologin" checked="checked" /&gt;&lt;/label&gt;</pre>
 
-</pre>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/login_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">             &lt;!-- IF S_AUTOLOGIN_ENABLED --&gt;&lt;dd&gt;&lt;label for="autologin"&gt;&lt;input type="checkbox" name="autologin" id="autologin" tabindex="4" /&gt; {L_LOG_ME_IN}&lt;/label&gt;&lt;/dd&gt;&lt;!-- ENDIF --&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">             &lt;!-- IF S_AUTOLOGIN_ENABLED --&gt;&lt;dd&gt;&lt;label for="autologin"&gt;&lt;input type="checkbox" name="autologin" id="autologin" tabindex="4" checked="checked" /&gt; {L_LOG_ME_IN}&lt;/label&gt;&lt;/dd&gt;&lt;!-- ENDIF --&gt;</pre>
 
 <p></p>			
 

@@ -62,18 +62,70 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">This snippet produces a little box exactly like the "disable board" information box. The box only shows if you have unread private messages. There is also a link to take you straight to your inbox. Sometimes I miss getting PM's - i.e. maybe don't notice them</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+styles/prosilver/template/overall_header.html
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums"></pre>
+<pre class="prettyprint linenums">       &lt;div id="page-body"&gt;</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">           &lt;!-- IF S_USER_UNREAD_PRIVMSG --&gt;
+          &lt;div id="message" class="rules"&gt;
+             &lt;div class="inner"&gt;&lt;span class="corners-top"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;
+                &lt;strong&gt;{L_INFORMATION}:&lt;/strong&gt; {L_NEW_PM_NOTICE} - Click &lt;a href="{U_PRIVATEMSGS}"&gt;here&lt;/a&gt; to go to your Inbox.
+             &lt;span class="corners-bottom"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/div&gt;
+          &lt;/div>
+          &lt;!-- ENDIF --&gt;</pre>
 
-<p></p>			
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+language/en/common.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'NEW_MESSAGES'            =&gt; 'New messages',</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       'NEW_PM_NOTICE'           =&gt; 'You have new messages waiting to be read',</pre>
+
+<p>If you have a subSilver2 or subSilver2 based style, you can use the code below</p>
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/subSilver2/template/overall_header.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       &lt;div id="menubar"&gt;</pre>
+<pre>#
+#-----[ AFTER ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">       &lt;!-- IF S_USER_UNREAD_PRIVMSG --&gt;
+          &lt;table class="tablebg" width="100%" cellspacing="1" cellpadding="0" style="margin-top: 5px;"&gt;
+          &lt;tr&gt;
+             &lt;td class="row1"&gt;
+                &lt;p class="breadcrumbs"&gt;&lt;strong&gt;{L_INFORMATION}:&lt;/strong&gt; {L_NEW_PM_NOTICE} - Click &lt; href="{U_PRIVATEMSGS}"&gt;here&lt;/a&gt; to go to your Inbox.&lt;/p&gt;
+             &lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;/table&gt;
+          &lt;br /&gt;
+       &lt;!-- ENDIF --&gt;</pre>            
+
+<p>Remember to purge your cache after makeing template changes.<br />
+To test that this works, send a PM to yourself. As soon as you see the confirmation screen, go straight to your board index or another page e.g faq</p>			
 
         </section>
     </div>

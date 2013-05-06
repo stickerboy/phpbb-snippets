@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>No quote button in 1st post  - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>No quote button in 1st post</h1>
+      <p>Hides the quote button from the 1st post of every topic (Exemption for admins/mods optional)</p>
   </div>
 </header>
 
@@ -61,19 +62,36 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=princexxx" style="font-weight:bold;">princexxx</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1515305">this topic</a>, this snippet will hide the quote button from the 1st post of every topic. Note that also hides the button from Admins and Moderators</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewtopic.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
-
-</pre>
-
+<pre class="prettyprint linenums">    'S_TOPIC_POSTER'   => ($topic_data['topic_poster'] == $poster_id) ? true : false,</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    'S_FIRST_POST'      => ($topic_data['topic_first_post_id'] == $row['post_id']) ? true : false,</pre>
+            
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+styles/prosilver/template/viewtopic_body.html
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                   &lt;!-- IF postrow.U_QUOTE --&gt;&lt;li class="quote-icon"&gt;&lt;a href="{postrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}"&gt;&lt;span&gt;{L_REPLY_WITH_QUOTE}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;</pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">                   &lt;!-- IF not postrow.S_FIRST_POST --&gt;&lt;!-- IF postrow.U_QUOTE --&gt;&lt;li class="quote-icon"&gt;&lt;a href="{postrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}">&lt;span&gt;{L_REPLY_WITH_QUOTE}&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;&lt;!-- ENDIF --&gt;&lt;!-- ENDIF --&gt;</pre>
 <p></p>			
 
         </section>

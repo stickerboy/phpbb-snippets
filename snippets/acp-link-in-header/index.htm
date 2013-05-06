@@ -52,7 +52,7 @@
 <header class="jumbotron subhead" id="overview">
   <div class="container">
     <h1>ACP link in header</h1>
-	  <p></p>
+	  <p>Adds a link to the ACP in the header of your site</p>
   </div>
 </header>
 
@@ -62,18 +62,23 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">Tired of having to scroll all the way down to the bottom of the page just to access the ACP? Well here's a quick way to get the ACP link in you header - this places it on the right hand side of the navbar, but feel free to move it anywhere you wish.</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+styles/prosilver/templates/overall_header.html
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums"></pre>
-
-<p></p>			
+<pre class="prettyprint linenums">                &lt;!-- IF U_EMAIL_TOPIC --&gt;</pre>
+<pre>#
+#-----[ BEFORE ADD ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    &lt;!-- IF U_ACP --&gt;&lt;br /&gt;&lt;strong&gt;&lt;a href="{U_ACP}" title="{L_ACP}"&gt;Admin CP&lt;/a&gt;&lt;/strong&gt;&lt;!-- ENDIF --&gt;</pre>
+<p>Note that I've only documented this for prosilver and prosilver based styles, but it's pretty much the same idea for subSilver2 styles. The reason I hard-coded the text in, was to save adding another var to language/en/common.php - <strong>{L_ACP}</strong> will work, but the text is too long IMO to place in the nav bar</p>
+<p><img src="./img/admin-link.png" alt="Admin Link" /></p>
 
         </section>
     </div>

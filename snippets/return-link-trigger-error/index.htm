@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>phpBB Snippets - </title>
+    <title>'Return to Index' link if no forum/topic/post exits - phpBB Snippets</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -51,7 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1></h1>
+    <h1>'Return to Index' link if no forum/topic/post exits</h1>
+      <p>Adds a link to return to the index page to the trigger_error when no forum/topic/post exists</p>
   </div>
 </header>
 
@@ -61,19 +62,104 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="http://www.phpbb.com/community/viewtopic.php">this topic</a>, </p>
+          <p class="lead">Slightly modified request by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=acemi" style="font-weight:bold;">acemi</a> in <a href="http://www.phpbb.com/community/viewtopic.php?f=72&t=1495495">this topic</a>, this snippet gives you a link to return to the index if you come across a forum/topic/post that doesn't exist - which could happen for many reasons</p>
 <pre>#
 #-----[ OPEN ]------------------------------------------
 #
-
+viewforum.php
 #
 #-----[ FIND ]------------------------------------------
 #
 </pre>	
-<pre class="prettyprint linenums">
+<pre class="prettyprint linenums">    if (!$forum_id)
+    {
+        trigger_error('NO_FORUM');
+    } </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    if (!$forum_id)
+    {
+        // trigger_error('NO_FORUM'); - commented out in case you need to add it back later
+        $user->setup();    
+        $redirect_url = append_sid("{$phpbb_root_path}index.$phpEx");
+        $message = $user->lang['NO_FORUM'] . '&lt;br /&gt;&lt;br /&gt;' . sprintf($user->lang['RETURN_INDEX'], '&lt;a href="' . $redirect_url . '"&gt;', '&lt;/a&gt;');
+        trigger_error($message);
+    } </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    if (!$forum_data)
+    {
+        trigger_error('NO_FORUM');
+    } </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    if (!$forum_id)
+    {
+        // trigger_error('NO_FORUM'); - commented out in case you need to add it back later
+        $user->setup();    
+        $redirect_url = append_sid("{$phpbb_root_path}index.$phpEx");
+        $message = $user->lang['NO_FORUM'] . '&lt;br /&gt;&lt;br /&gt;' . sprintf($user->lang['RETURN_INDEX'], '&lt;a href="' . $redirect_url . '"&gt;', '&lt;/a&gt;');
+        trigger_error($message);
+    } </pre>
 
-</pre>
-
+<pre>#
+#-----[ OPEN ]------------------------------------------
+#
+viewtopic.php
+#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    // Do we have a topic or post id?
+    if (!$topic_id &amp;&amp; !$post_id)
+    {
+        trigger_error('NO_TOPIC');
+    } </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">    // Do we have a topic or post id?
+    if (!$topic_id &amp;&amp; !$post_id)
+    {
+        //trigger_error('NO_TOPIC'); - commented out in case you need to add it back later
+        $user->setup();
+        $redirect_url = append_sid("{$phpbb_root_path}index.$phpEx");
+        $message = $user->lang['NO_TOPIC'] . '&lt;br /&gt;&lt;br /&gt;' . sprintf($user->lang['RETURN_INDEX'], '&lt;a href="' . $redirect_url . '"&gt;', '&lt;/a&gt;');
+        trigger_error($message);
+    } </pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        // If post_id was submitted, we try at least to display the topic as a last resort...</pre>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        trigger_error('NO_TOPIC'); </pre>
+<p>Double find to make sure we get the correct code</p>
+<pre>#
+#-----[ FIND ]------------------------------------------
+#
+</pre>	
+<pre class="prettyprint linenums">        //trigger_error('NO_TOPIC'); - commented out in case you need to add it back later
+        $user->setup();
+        $redirect_url = append_sid("{$phpbb_root_path}index.$phpEx");
+        $message = $user->lang['NO_TOPIC'] . '&lt;br /&gt;&lt;br /&gt;' . sprintf($user->lang['RETURN_INDEX'], '&lt;a href="' . $redirect_url . '"&gt;', '&lt;/a&gt;');
+        trigger_error($message); </pre>
+<p><img src="./img/no_topic.png" title="No Topic" /></p>
+<p>If you would like to add an automatic refresh to that, so that after say 3 seconds i jumps to the index page, then add this code before the trigger_error()</p>
+<pre class="prettyprint linenums">        meta_refresh(3, $redirect_url); </pre>
+<p>For example:</p>
+<pre class="prettyprint linenums">        meta_refresh(3, $redirect_url);
+        trigger_error($message);  </pre>
 <p></p>			
 
         </section>
