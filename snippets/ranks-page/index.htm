@@ -51,8 +51,8 @@
 
 <header class="jumbotron subhead" id="overview">
   <div class="container">
-    <h1>Rank Page</h1>
-	  <p></p>
+    <h1>Ranks Page</h1>
+	  <p>Simple page that displays all the ranks and their titles</p>
   </div>
 </header>
 
@@ -62,18 +62,67 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">Lists all your ranks on 1 page - User Ranks at the top, Special ranks at the bottom. If you want to change the order they are displayed, simply alter the ASC/DESC in the SQL</p>
+            <p>If you only want to show normal post based ranks and not any of the special ranks, you can make the following adjustment to <strong>ranks.php</strong>:</p>
 <pre>#
-#-----[ OPEN ]------------------------------------------
-#
-
-#
 #-----[ FIND ]------------------------------------------
 #
-</pre>	
-<pre class="prettyprint linenums"></pre>
+</pre>
+<pre class="prettyprint linenums">    // How many ranks do we have?
+    $sql = 'SELECT *
+        FROM ' . RANKS_TABLE . '
+        ORDER BY rank_special ASC, rank_min ASC, rank_title ASC';
+    $result = $db-&gt;sql_query($sql);
 
-<p></p>			
+    while ($row = $db-&gt;sql_fetchrow($result)) 
+    {
+        $template-&gt;assign_block_vars('rank', array(
+            'RANK_ID'           =&gt; $row['rank_id'],
+            'RANK_TITLE'        =&gt; (isset($row['rank_title'])) ? $row['rank_title'] : '',
+            'RANK_MIN'          =&gt; (isset($row['rank_min']) &amp;&amp; !$row['rank_special']) ? $row['rank_min'] : '-',
+            'S_RANK_SPECIAL'    =&gt; (isset($row['rank_special'])) ? true : false,
+            'RANK_IMAGE'        =&gt; (empty($row['rank_image'])) ? '' : $phpbb_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
+            'U_EDIT_RANK'       =&gt; ($auth-&gt;acl_get('a_ranks')) ? append_sid("{$phpbb_root_path}adm/index.$phpEx", 'i=ranks&amp;mode=ranks&amp;action=edit&amp;id=' . $row['rank_id'], true, $user-&gt;session_id) : '',
+        ));
+    }
+    $db-&gt;sql_freeresult($result); </pre>
+<pre>#
+#-----[ REPLACE WITH ]------------------------------------------
+#
+</pre>            
+<pre class="prettyprint linenums">    // How many ranks do we have?
+    $sql = 'SELECT *
+        FROM ' . RANKS_TABLE . '
+            WHERE rank_special = 0
+        ORDER BY rank_min ASC, rank_title ASC';
+    $result = $db-&gt;sql_query($sql);
+
+    while ($row = $db-&gt;sql_fetchrow($result)) 
+    {
+        $template-&gt;assign_block_vars('rank', array(
+            'RANK_ID'           =&gt; $row['rank_id'],
+            'RANK_TITLE'        =&gt; (isset($row['rank_title'])) ? $row['rank_title'] : '',
+            'RANK_MIN'          =&gt; (isset($row['rank_min']) &amp;&amp; !$row['rank_special']) ? $row['rank_min'] : '-',
+            'RANK_IMAGE'        =&gt; (empty($row['rank_image'])) ? '' : $phpbb_root_path . $config['ranks_path'] . '/' . $row['rank_image'],
+            'U_EDIT_RANK'       =&gt; ($auth-&gt;acl_get('a_ranks')) ? append_sid("{$phpbb_root_path}adm/index.$phpEx", 'i=ranks&amp;mode=ranks&amp;action=edit&amp;id=' . $row['rank_id'], true, $user-&gt;session_id) : '',
+        ));
+    }
+    $db->sql_freeresult($result); </pre>            
+            <p>
+                <a href="files/RanksPage.zip" title="Ranks Page Download" class="btn btn-large btn-primary"><i class="icon-download-alt icon-white"></i> Download</a>
+            </p>            
+<pre>#
+#-----[ COPY ]------------------------------------------
+#
+ranks.php to ranks.php
+language/en/mod/ranks.php to language/en/mod/ranks.php
+styles/prosilver/template/ranks_body.html to styles/prosilver/template/ranks_body.html
+</pre>		
+<pre>#
+#-----[ DIY ]------------------------------------------
+#
+Find a suitable place to add your link to your groups page, whether it's on the header or footer or custom page
+</pre>		
 
         </section>
     </div>
