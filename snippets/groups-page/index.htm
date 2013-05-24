@@ -52,7 +52,7 @@
 <header class="jumbotron subhead" id="overview">
   <div class="container">
     <h1>Groups page</h1>
-	  <p></p>
+	  <p>Lists custom groups with their members on a separate page. Ideal for small groups</p>
   </div>
 </header>
 
@@ -62,20 +62,35 @@
           <div class="page-header">
             
           </div>
-          <p class="lead">Requested by <a href="http://www.phpbb.com/community/memberlist.php?mode=viewprofile&un=" style="font-weight:bold;"></a> in <a href="">this topic</a>, </p>
+          <p class="lead">Requested by JohanNL, here is a simple page that lists all your custom groups and their members. <br />It's a very simple snippet, requiring only 1 file edit</p>
+          <p>Some of the features:</p>
+            <ul>
+                <li>Group name is now a link to the memberlist groups page</li>
+                <li>Groups rank image &amp; title</li>
+                <li>Config options - decide whether or not to show group rank, title and description</li>
+            </ul>
+            <p>By default, the group leader is the 1st user in the list and their name is in bold. If there is no group leader, then none is shown. If there are no members, no members are shown. If there is neither a leader or any members, but the groups exists, the box will show a message like "<strong>This group does not have a leader assigned</strong>" or "<strong>There are currently no members in this group</strong>".</p>
+
+            <p>All styling is done in the HTML file itself, so if you want to change font sizes or things like that, change them there. I also included a little bit of CSS3 - rounded corner borders. Just remove the CSS and the class="round" if you don't want that.</p>
+
+            <p>I should note that there is no pagination of any sort included with this script and it will pull all members of custom groups onto that one page. So if you have a group with 100 or 1000 members, you may wish to exclude that group ;) This snippet is ideal for small groups of people you wish to give recognition to.</p>
+ 
+            <p>
+                <a href="files/GroupsPage.zip" title="Groups Page Download" class="btn btn-large btn-primary"><i class="icon-download-alt icon-white"></i> Download</a>
+            </p>
 <pre>#
-#-----[ OPEN ]------------------------------------------
+#-----[ COPY ]------------------------------------------
 #
-
+groups.php to groups.php
+language/en/mod/groups.php to language/en/mod/groups.php
+styles/prosilver/template/groups_body.html to styles/prosilver/template/groups_body.html
+</pre>		
+<pre>#
+#-----[ DIY ]------------------------------------------
 #
-#-----[ FIND ]------------------------------------------
-#
-</pre>	
-<pre class="prettyprint linenums"></pre>
-
-<p></p>			
-
-        </section>
+Find a suitable place to add your link to your groups page, whether it's on the header or footer or custom page
+</pre>
+      </section>
     </div>
 
 	<footer class="footer">
