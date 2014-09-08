@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>User Stars - phpBB Snippets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="./../../assets/css/bootstrap.css" rel="stylesheet">
+    <link href="./../../assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="./../../assets/css/docs.css" rel="stylesheet">
+    <link href="./../../assets/js/google-code-prettify/prettify.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="./../../assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="./../../assets/ico/apple-touch-icon-114-precomposed.png">
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="./../../assets/ico/apple-touch-icon-72-precomposed.png">
+                    <link rel="apple-touch-icon-precomposed" href="./../../assets/ico/apple-touch-icon-57-precomposed.png">
+                                   <link rel="shortcut icon" href="./../../assets/ico/favicon.png">
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="./../../index.html" style="color:#fff;">phpBB Snippets</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active">
+                <a href="#top">Back to top</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<header class="jumbotron subhead" id="overview">
+  <div class="container">
+    <h1>User Stars</h1>
+	  <p>Admins can give any user a 'Star' that will show next to their username</p>
+  </div>
+</header>
+
+  <div class="container">
+
+        <section id="top">
+          <div class="page-header">
+            
+          </div>
+          <p class="lead">The Star is an image that will show next to their username in viewtopic and profiles. This Star can be used as a reward system - good users get a Star. Or for marking donators to your site. You can set, per user, text that will show up when you hover over the users star image.</p>
+          <p>Some of the features:</p>
+            <ul>
+                <li>Turn on/off per-user<br />
+                <li>User Stars to show in these locations by default -
+                    <ul>
+                        <li>Viewtopic</li>
+                        <li>Viewprofile</li>
+                        <li>Memberlist/Profile</li>
+                        <li>Viewonline page</li>
+                        <li>Who's Online (Index/Forum)</li>
+                        <li>Friends/Foes UCP Block</li>
+                        <li>Groups/Teams page</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>ACP features:</p>
+            <ul>
+                <li>New field in ACP section where admins can define the location of the Star image</li>
+                <li>New field in ACP section where admins can define text to be show when someone hovers over the Star image. (ie. 'UserX is Power Member', 'UserX has donated to foo.com', 'UserX is a donator')</li>
+            </ul>
+            <p>
+                <a href="files/UserStars.zip" title="User Stars Download" class="btn btn-large btn-primary"><i class="icon-download-alt icon-white"></i> Download</a>
+            </p>		
+            <pre>## This is *NOT* a reputation MOD and never will be.
+## This MOD does *NOT* give users extra permissions if they have a star.
+## It's just a simple way of pointing out donators/helpers without mucking up ranks and custom titles</pre>
+ 
+<pre>#
+#-----[ DIY ]------------------------------------------
+#
+Follow the instructions inside the install file
+</pre>
+            <p>If you need assistance in installing a MOD, the following links may help:</p>
+            <p>
+                <ul>
+                    <li><a href="https://www.phpbb.com/kb/article/how-to-install-mods/" title="How to Install MODs">How to Install MODs</a></li>
+                    <li><a href="https://www.phpbb.com/kb/article/how-to-install-a-modx-modification/" title="How to install a MODX Modification">How to install a MODX Modification</a></li>
+                </ul>
+            </p>
+      </section>
+    </div>
+
+	<footer class="footer">
+      <div class="container">
+        <p>`This page was designed and built using the awesome Bootstrap CSS framework from <a target="_blank" href="http://twitter.com/mdo">@mdo</a> and <a target="_blank" href="http://twitter.com/fat">@fat</a>.</p>
+        <p>Code provided here is given as is with no guarantee of support - this code has <strong>not</strong> been tested with the latest phpBB versions.</p>
+        <ul class="footer-links">
+          <li><a href="http://www.phpbb.com/">phpBB.com</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://github.com/phpBB">phpBB Github</a></li>
+          <li class="muted">·</li>
+          <li><a href="http://www.kennycameron.co.uk">Personal Site</a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <script src="./../../assets/js/jquery.js"></script>
+    <script src="./../../assets/js/bootstrap-transition.js"></script>
+    <script src="./../../assets/js/bootstrap-modal.js"></script>
+    <script src="./../../assets/js/bootstrap-tab.js"></script>
+    <script src="./../../assets/js/bootstrap-tooltip.js"></script>
+    <script src="./../../assets/js/bootstrap-button.js"></script>
+    <script src="./../../assets/js/bootstrap-collapse.js"></script>
+    <script src="./../../assets/js/bootstrap-affix.js"></script>
+
+    <script src="./../../assets/js/holder/holder.js"></script>
+    <script src="./../../assets/js/google-code-prettify/prettify.js"></script>
+
+    <script src="./../../assets/js/application.js"></script>
+
+  </body>
+</html>
